@@ -1,4 +1,9 @@
-import { MCQ_QUESTIONS, SILHOUETTE_QUESTIONS, DIRECT_QUESTIONS, SPEED_CHALLENGES } from '../data/questionsData';
+import {
+  MCQ_QUESTIONS,
+  SILHOUETTE_QUESTIONS,
+  DIRECT_QUESTIONS,
+  SPEED_CHALLENGES,
+} from '../data/questionsData';
 
 export const BOARD_SIZE = 30;
 
@@ -78,11 +83,12 @@ export function getRankings(players) {
 }
 
 /**
- * Draws a unique, non-repeating question from the pool
+ * Draws a unique, non-repeating question from the pool across MCQ, SILHOUETTE, and DIRECT
  */
 export function drawUniqueQuestion(answeredQuestionIds = []) {
   const rand = Math.random();
-  const preferredKind = rand < 0.5 ? 'MCQ' : rand < 0.8 ? 'SILHOUETTE' : 'DIRECT';
+  const preferredKind =
+    rand < 0.35 ? 'MCQ' : rand < 0.65 ? 'SILHOUETTE' : 'DIRECT';
 
   let pool =
     preferredKind === 'MCQ'

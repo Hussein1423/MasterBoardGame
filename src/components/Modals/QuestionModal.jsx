@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -13,29 +13,29 @@ import {
   Alert,
   TextField,
   InputAdornment,
-} from '@mui/material';
-import QuizIcon from '@mui/icons-material/Quiz';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
-import HelpIcon from '@mui/icons-material/Help';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import SendIcon from '@mui/icons-material/Send';
-import TimerProgress from '../Common/TimerProgress';
-import { useGame } from '../../context/GameContext';
+} from "@mui/material";
+import QuizIcon from "@mui/icons-material/Quiz";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import HelpIcon from "@mui/icons-material/Help";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import FlipCameraAndroidIcon from "@mui/icons-material/FlipCameraAndroid";
+import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import SendIcon from "@mui/icons-material/Send";
+import TimerProgress from "../Common/TimerProgress";
+import { useGame } from "../../context/GameContext";
 
 // Helper function to normalize Arabic text for forgiving comparison
 function normalizeArabic(text) {
-  if (!text) return '';
+  if (!text) return "";
   return text
     .toLowerCase()
     .trim()
-    .replace(/[أإآ]/g, 'ا')
-    .replace(/ة/g, 'ه')
-    .replace(/ى/g, 'ي')
-    .replace(/[\u064B-\u065F]/g, '') // remove arabic tashkeel/diacritics
-    .replace(/[^a-zA-Z0-9\u0621-\u064A]/g, ''); // remove punctuation/spaces
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .replace(/[\u064B-\u065F]/g, "") // remove arabic tashkeel/diacritics
+    .replace(/[^a-zA-Z0-9\u0621-\u064A]/g, ""); // remove punctuation/spaces
 }
 
 export default function QuestionModal({ open, tile }) {
@@ -47,7 +47,7 @@ export default function QuestionModal({ open, tile }) {
   const questionItem = activeModal?.question;
 
   const [selectedOption, setSelectedOption] = useState(null);
-  const [typedAnswer, setTypedAnswer] = useState('');
+  const [typedAnswer, setTypedAnswer] = useState("");
   const [typedFeedback, setTypedFeedback] = useState(null); // { isCorrect, message }
   const [isAnswered, setIsAnswered] = useState(false);
   const [isTimesUp, setIsTimesUp] = useState(false);
@@ -68,27 +68,27 @@ export default function QuestionModal({ open, tile }) {
     questionItem?.data?.initialHint ||
     (Array.isArray(questionItem?.data?.clues)
       ? questionItem.data.clues[0]
-      : '');
+      : "");
   const additionalHints = Array.isArray(questionItem?.data?.additionalHints)
     ? questionItem.data.additionalHints
     : Array.isArray(questionItem?.data?.clues)
-    ? questionItem.data.clues.slice(1)
-    : [];
+      ? questionItem.data.clues.slice(1)
+      : [];
   const avatarConfig = questionItem?.data?.avatarConfig || {
-    symbol: '❓',
-    color: '#00E5FF',
-    hairStyle: '',
+    symbol: "❓",
+    color: "#00E5FF",
+    hairStyle: "",
   };
 
   // Base Points & Dynamic Points with 50% progressive penalty on hint reveals
   const basePoints =
     questionItem.data.basePoints ||
     questionItem.data.points ||
-    (questionItem.kind === 'MCQ' ? 0.5 : 3);
+    (questionItem.kind === "MCQ" ? 0.5 : 3);
 
   // Calculate current effective points: basePoints * (0.5 ^ hintsUsedCount)
   const effectivePoints =
-    questionItem.kind === 'SILHOUETTE'
+    questionItem.kind === "SILHOUETTE"
       ? parseFloat((basePoints * Math.pow(0.5, hintsUsedCount)).toFixed(2))
       : basePoints;
 
@@ -117,26 +117,30 @@ export default function QuestionModal({ open, tile }) {
             1,
             true,
             `إجابة صحيحة من ${answeringPlayer.name} المحوّل له السؤال`,
-            activePlayerIndex
+            activePlayerIndex,
           );
         } else {
           resolveQuiz(
             0,
             false,
             `إجابة خاطئة من ${answeringPlayer.name} المحوّل له السؤال`,
-            activePlayerIndex
+            activePlayerIndex,
           );
           dispatch({
-            type: 'DEDUCT_POINTS',
+            type: "DEDUCT_POINTS",
             payload: {
               playerIndex: deflectedToPlayerIdx,
               points: 1,
-              reason: 'فشل في سؤال محوّل',
+              reason: "فشل في سؤال محوّل",
             },
           });
         }
       } else {
-        resolveQuiz(pts, isCorrect, `سؤال أنمي (${questionItem.data.anime || ''})`);
+        resolveQuiz(
+          pts,
+          isCorrect,
+          `سؤال أنمي (${questionItem.data.anime || ""})`,
+        );
       }
     }, 1800);
   };
@@ -153,21 +157,21 @@ export default function QuestionModal({ open, tile }) {
             1,
             true,
             `إجابة صحيحة من ${answeringPlayer.name} المحوّل له السؤال`,
-            activePlayerIndex
+            activePlayerIndex,
           );
         } else {
           resolveQuiz(
             0,
             false,
             `إجابة خاطئة من ${answeringPlayer.name} المحوّل له السؤال`,
-            activePlayerIndex
+            activePlayerIndex,
           );
           dispatch({
-            type: 'DEDUCT_POINTS',
+            type: "DEDUCT_POINTS",
             payload: {
               playerIndex: deflectedToPlayerIdx,
               points: 1,
-              reason: 'فشل في سؤال محوّل',
+              reason: "فشل في سؤال محوّل",
             },
           });
         }
@@ -175,7 +179,7 @@ export default function QuestionModal({ open, tile }) {
         resolveQuiz(
           pts,
           isCorrect,
-          `سؤال أنمي (${questionItem.data.anime || ''})`
+          `سؤال أنمي (${questionItem.data.anime || ""})`,
         );
       }
     }, 1200);
@@ -195,13 +199,14 @@ export default function QuestionModal({ open, tile }) {
       normInput === normTarget1;
 
     if (isMatch) {
-      setTypedFeedback({ isCorrect: true, message: '🎉 إجابة صحيحة وممتازة!' });
+      setTypedFeedback({ isCorrect: true, message: "🎉 إجابة صحيحة وممتازة!" });
       setIsRevealed(true);
       handleDirectVerdict(true);
     } else {
       setTypedFeedback({
         isCorrect: false,
-        message: '❌ لم يتم التعرف على الاسم، حاول مرة أخرى أو استخدم زر كشف الإجابة والتحكيم!',
+        message:
+          "❌ لم يتم التعرف على الاسم، حاول مرة أخرى أو استخدم زر كشف الإجابة والتحكيم!",
       });
     }
   };
@@ -212,7 +217,7 @@ export default function QuestionModal({ open, tile }) {
     setIsAnswered(true);
 
     setTimeout(() => {
-      resolveQuiz(0, false, 'انتهى الوقت المحدد للسؤال');
+      resolveQuiz(0, false, "انتهى الوقت المحدد للسؤال");
     }, 1500);
   };
 
@@ -228,13 +233,16 @@ export default function QuestionModal({ open, tile }) {
   };
 
   // Silhouette Visual Obscurity Filter calculation
-  let silhouetteFilter = 'brightness(0) blur(5px) drop-shadow(0px 0px 4px #000)';
+  let silhouetteFilter =
+    "brightness(0) blur(5px) drop-shadow(0px 0px 4px #000)";
   if (isRevealed) {
-    silhouetteFilter = 'none';
+    silhouetteFilter = "none";
   } else if (hintsUsedCount === 1) {
-    silhouetteFilter = 'brightness(0) blur(1.5px) drop-shadow(0px 0px 4px #000)';
+    silhouetteFilter =
+      "brightness(0) blur(1.5px) drop-shadow(0px 0px 4px #000)";
   } else if (hintsUsedCount >= 2) {
-    silhouetteFilter = 'brightness(0.6) blur(0px) drop-shadow(0px 0px 6px #00E5FF)';
+    silhouetteFilter =
+      "brightness(0.6) blur(0px) drop-shadow(0px 0px 6px #00E5FF)";
   }
 
   return (
@@ -244,54 +252,54 @@ export default function QuestionModal({ open, tile }) {
       fullWidth
       PaperProps={{
         sx: {
-          border: `2px solid ${activePlayer?.color || '#FF7A00'}`,
-          boxShadow: `0 0 40px ${activePlayer?.color || '#FF7A00'}55`,
-          background: 'linear-gradient(180deg, #0F172A 0%, #070B14 100%)',
+          border: `2px solid ${activePlayer?.color || "#FF7A00"}`,
+          boxShadow: `0 0 40px ${activePlayer?.color || "#FF7A00"}55`,
+          background: "linear-gradient(180deg, #0F172A 0%, #070B14 100%)",
         },
       }}
     >
       <DialogTitle sx={{ pb: 1 }}>
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
             gap: 1,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <QuizIcon sx={{ color: '#00E5FF', fontSize: 32 }} />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <QuizIcon sx={{ color: "#00E5FF", fontSize: 32 }} />
             <Box>
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 900, color: '#00E5FF' }}
+                sx={{ fontWeight: 900, color: "#00E5FF" }}
               >
-                {questionItem.kind === 'MCQ'
-                  ? 'سؤال خيارات من متعدد (MCQ)'
-                  : questionItem.kind === 'SILHOUETTE'
-                  ? 'خمن الشخصية (Silhouette)'
-                  : 'سؤال أنمي مباشر (Direct)'}
+                {questionItem.kind === "MCQ"
+                  ? "سؤال خيارات من متعدد (MCQ)"
+                  : questionItem.kind === "SILHOUETTE"
+                    ? "خمن الشخصية (Silhouette)"
+                    : "سؤال أنمي مباشر (Direct)"}
               </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                أنمي: {questionItem.data.anime || ''} • الخانة: {tile?.title || ''}
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                الخانة: {tile?.title || ""}
               </Typography>
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {activePlayer?.inventory?.doublePoints && (
               <Chip
                 icon={
                   <LocalFireDepartmentIcon
-                    sx={{ color: '#FF7A00 !important' }}
+                    sx={{ color: "#FF7A00 !important" }}
                   />
                 }
                 label="مضاعفة النقاط 2x مفعلة!"
                 size="small"
                 sx={{
-                  backgroundColor: 'rgba(255, 122, 0, 0.2)',
-                  color: '#FF7A00',
+                  backgroundColor: "rgba(255, 122, 0, 0.2)",
+                  color: "#FF7A00",
                   fontWeight: 800,
                 }}
               />
@@ -300,54 +308,54 @@ export default function QuestionModal({ open, tile }) {
               label={`+${effectivePoints} نقطة`}
               sx={{
                 backgroundColor:
-                  hintsUsedCount > 0 ? 'rgba(255, 215, 0, 0.2)' : '#00E5FF22',
-                color: hintsUsedCount > 0 ? '#FFD700' : '#00E5FF',
-                border: hintsUsedCount > 0 ? '1px solid #FFD700' : 'none',
+                  hintsUsedCount > 0 ? "rgba(255, 215, 0, 0.2)" : "#00E5FF22",
+                color: hintsUsedCount > 0 ? "#FFD700" : "#00E5FF",
+                border: hintsUsedCount > 0 ? "1px solid #FFD700" : "none",
                 fontWeight: 900,
-                fontSize: '0.95rem',
-                transition: 'all 0.3s ease',
+                fontSize: "0.95rem",
+                transition: "all 0.3s ease",
               }}
             />
           </Box>
         </Box>
       </DialogTitle>
 
-      <Divider sx={{ borderColor: 'rgba(255,255,255,0.08)' }} />
+      <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />
 
       <DialogContent sx={{ py: 3 }}>
         {/* Answering Player Banner */}
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             mb: 3,
-            flexWrap: 'wrap',
+            flexWrap: "wrap",
             gap: 2,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             <Paper
               sx={{
                 px: 2,
                 py: 0.8,
                 borderRadius: 3,
-                backgroundColor: `${answeringPlayer?.color || '#FF7A00'}22`,
-                border: `1.5px solid ${answeringPlayer?.color || '#FF7A00'}`,
-                display: 'flex',
-                alignItems: 'center',
+                backgroundColor: `${answeringPlayer?.color || "#FF7A00"}22`,
+                border: `1.5px solid ${answeringPlayer?.color || "#FF7A00"}`,
+                display: "flex",
+                alignItems: "center",
                 gap: 1,
               }}
             >
-              <Typography sx={{ fontSize: '1.2rem' }}>
+              <Typography sx={{ fontSize: "1.2rem" }}>
                 {answeringPlayer?.symbol}
               </Typography>
               <Typography
                 variant="subtitle2"
-                sx={{ fontWeight: 800, color: '#FFFFFF' }}
+                sx={{ fontWeight: 800, color: "#FFFFFF" }}
               >
-                المجيب: {answeringPlayer?.name}{' '}
-                {deflectedToPlayerIdx !== null && '(تم تحويل السؤال إليه!)'}
+                المجيب: {answeringPlayer?.name}{" "}
+                {deflectedToPlayerIdx !== null && "(تم تحويل السؤال إليه!)"}
               </Typography>
             </Paper>
           </Box>
@@ -362,7 +370,10 @@ export default function QuestionModal({ open, tile }) {
 
         {/* Time's Up Banner */}
         {isTimesUp && (
-          <Alert severity="error" sx={{ mb: 3, borderRadius: 2.5, fontWeight: 800 }}>
+          <Alert
+            severity="error"
+            sx={{ mb: 3, borderRadius: 2.5, fontWeight: 800 }}
+          >
             ⏰ انتهى الوقت المحدد! لم يتم احتساب أي نقاط، جاري تحويل الدور...
           </Alert>
         )}
@@ -377,25 +388,25 @@ export default function QuestionModal({ open, tile }) {
                 p: 1.5,
                 mb: 3,
                 borderRadius: 2.5,
-                backgroundColor: 'rgba(224, 64, 251, 0.12)',
-                border: '1px solid rgba(224, 64, 251, 0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
+                backgroundColor: "rgba(224, 64, 251, 0.12)",
+                border: "1px solid rgba(224, 64, 251, 0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
                 gap: 1,
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <FlipCameraAndroidIcon sx={{ color: '#E040FB' }} />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <FlipCameraAndroidIcon sx={{ color: "#E040FB" }} />
                 <Typography
                   variant="body2"
-                  sx={{ fontWeight: 700, color: '#E040FB' }}
+                  sx={{ fontWeight: 700, color: "#E040FB" }}
                 >
                   لديك مرآة تحويل! هل ترغب في توجيه هذا السؤال لأحد منافسيك؟
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
                 {players
                   .map((p, idx) => ({ ...p, originalIdx: idx }))
                   .filter((p) => p.originalIdx !== activePlayerIndex)
@@ -419,7 +430,7 @@ export default function QuestionModal({ open, tile }) {
           )}
 
         {/* --- TYPE 1: MCQ QUESTION --- */}
-        {questionItem.kind === 'MCQ' && (
+        {questionItem.kind === "MCQ" && (
           <Box>
             <Typography
               variant="h5"
@@ -434,15 +445,15 @@ export default function QuestionModal({ open, tile }) {
                   const isSelected = selectedOption === optIdx;
                   const isCorrect = optIdx === questionItem.data.correctIndex;
 
-                  let btnBg = 'rgba(255, 255, 255, 0.05)';
-                  let btnBorder = 'rgba(255, 255, 255, 0.12)';
+                  let btnBg = "rgba(255, 255, 255, 0.05)";
+                  let btnBorder = "rgba(255, 255, 255, 0.12)";
                   if (isAnswered) {
                     if (isCorrect) {
-                      btnBg = 'rgba(0, 230, 118, 0.25)';
-                      btnBorder = '#00E676';
+                      btnBg = "rgba(0, 230, 118, 0.25)";
+                      btnBorder = "#00E676";
                     } else if (isSelected) {
-                      btnBg = 'rgba(255, 23, 68, 0.25)';
-                      btnBorder = '#FF1744';
+                      btnBg = "rgba(255, 23, 68, 0.25)";
+                      btnBorder = "#FF1744";
                     }
                   }
 
@@ -455,17 +466,17 @@ export default function QuestionModal({ open, tile }) {
                         sx={{
                           p: 2,
                           borderRadius: 3,
-                          cursor: isInteractive ? 'pointer' : 'default',
+                          cursor: isInteractive ? "pointer" : "default",
                           backgroundColor: btnBg,
                           border: `2px solid ${btnBorder}`,
                           opacity: isTimesUp && !isCorrect ? 0.6 : 1,
-                          transition: 'all 0.2s ease',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          '&:hover': {
-                            transform: isInteractive ? 'scale(1.02)' : 'none',
-                            borderColor: isInteractive ? '#00E5FF' : btnBorder,
+                          transition: "all 0.2s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          "&:hover": {
+                            transform: isInteractive ? "scale(1.02)" : "none",
+                            borderColor: isInteractive ? "#00E5FF" : btnBorder,
                           },
                         }}
                       >
@@ -473,10 +484,10 @@ export default function QuestionModal({ open, tile }) {
                           {optIdx + 1}. {option}
                         </Typography>
                         {isAnswered && isCorrect && (
-                          <CheckCircleIcon sx={{ color: '#00E676' }} />
+                          <CheckCircleIcon sx={{ color: "#00E676" }} />
                         )}
                         {isAnswered && isSelected && !isCorrect && (
-                          <CancelIcon sx={{ color: '#FF1744' }} />
+                          <CancelIcon sx={{ color: "#FF1744" }} />
                         )}
                       </Paper>
                     </Grid>
@@ -489,15 +500,15 @@ export default function QuestionModal({ open, tile }) {
               <Alert
                 severity={
                   selectedOption === questionItem.data.correctIndex
-                    ? 'success'
-                    : 'error'
+                    ? "success"
+                    : "error"
                 }
                 sx={{ mt: 3, borderRadius: 2.5 }}
               >
                 <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>
                   {selectedOption === questionItem.data.correctIndex
-                    ? '🎉 إجابة صحيحة!'
-                    : '❌ إجابة خاطئة!'}
+                    ? "🎉 إجابة صحيحة!"
+                    : "❌ إجابة خاطئة!"}
                 </Typography>
                 <Typography variant="body2">
                   {questionItem.data.explanation}
@@ -508,35 +519,40 @@ export default function QuestionModal({ open, tile }) {
         )}
 
         {/* --- TYPE 2: SILHOUETTE GUESSING QUESTION (OPEN-ENDED WITHOUT MCQ) --- */}
-        {questionItem.kind === 'SILHOUETTE' && (
-          <Box sx={{ textAlign: 'center' }}>
+        {questionItem.kind === "SILHOUETTE" && (
+          <Box sx={{ textAlign: "center" }}>
             <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
-              {questionItem.data.question || 'من هي هذه الشخصية؟'}
+              {questionItem.data.question || "من هي هذه الشخصية؟"}
             </Typography>
 
             {/* Penalty Status Notice */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mb: 2 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "center", gap: 1, mb: 2 }}
+            >
               <Chip
                 label={`النقاط الأساسية: ${basePoints} نقطة`}
                 size="small"
                 variant="outlined"
-                sx={{ color: 'text.secondary', borderColor: 'rgba(255,255,255,0.2)' }}
+                sx={{
+                  color: "text.secondary",
+                  borderColor: "rgba(255,255,255,0.2)",
+                }}
               />
               <Chip
                 label={
                   hintsUsedCount === 0
-                    ? '100% النقاط (بدون خصم)'
+                    ? "100% النقاط (بدون خصم)"
                     : hintsUsedCount === 1
-                    ? 'خصم 50% (تلميح 1 مستخدم)'
-                    : 'خصم 75% (تلميحان مستخدمان)'
+                      ? "خصم 50% (تلميح 1 مستخدم)"
+                      : "خصم 75% (تلميحان مستخدمان)"
                 }
                 size="small"
                 sx={{
                   backgroundColor:
                     hintsUsedCount === 0
-                      ? 'rgba(0, 230, 118, 0.2)'
-                      : 'rgba(255, 122, 0, 0.2)',
-                  color: hintsUsedCount === 0 ? '#00E676' : '#FF7A00',
+                      ? "rgba(0, 230, 118, 0.2)"
+                      : "rgba(255, 122, 0, 0.2)",
+                  color: hintsUsedCount === 0 ? "#00E676" : "#FF7A00",
                   fontWeight: 800,
                 }}
               />
@@ -547,29 +563,29 @@ export default function QuestionModal({ open, tile }) {
               sx={{
                 width: 140,
                 height: 140,
-                mx: 'auto',
+                mx: "auto",
                 mb: 3,
-                borderRadius: '50%',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                borderRadius: "50%",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
                 border: `3px solid ${avatarConfig.color}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
                 boxShadow: isRevealed
                   ? `0 0 30px ${avatarConfig.color}`
                   : hintsUsedCount > 0
-                  ? `0 0 20px ${avatarConfig.color}66`
-                  : 'none',
-                transition: 'all 0.5s ease',
+                    ? `0 0 20px ${avatarConfig.color}66`
+                    : "none",
+                transition: "all 0.5s ease",
               }}
             >
               <Typography
                 sx={{
-                  fontSize: '4.5rem',
+                  fontSize: "4.5rem",
                   lineHeight: 1,
                   filter: silhouetteFilter,
-                  transition: 'filter 0.5s ease',
+                  transition: "filter 0.5s ease",
                 }}
               >
                 {avatarConfig.symbol}
@@ -577,7 +593,7 @@ export default function QuestionModal({ open, tile }) {
             </Box>
 
             {/* Progressive Hints List */}
-            <Box sx={{ textAlign: 'right', mb: 3, maxWidth: 620, mx: 'auto' }}>
+            <Box sx={{ textAlign: "right", mb: 3, maxWidth: 620, mx: "auto" }}>
               {/* Initial Hint (Always Visible - 0% Penalty) */}
               {initialHint && (
                 <Paper
@@ -585,11 +601,14 @@ export default function QuestionModal({ open, tile }) {
                     p: 1.5,
                     mb: 1.5,
                     borderRadius: 2,
-                    backgroundColor: 'rgba(0, 229, 255, 0.08)',
-                    border: '1px solid rgba(0, 229, 255, 0.3)',
+                    backgroundColor: "rgba(0, 229, 255, 0.08)",
+                    border: "1px solid rgba(0, 229, 255, 0.3)",
                   }}
                 >
-                  <Typography variant="body2" sx={{ fontWeight: 700, color: '#00E5FF' }}>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 700, color: "#00E5FF" }}
+                  >
                     💡 التلميح المبدئي (مكافأة 100%):
                   </Typography>
                   <Typography variant="body2" sx={{ fontWeight: 600, mt: 0.5 }}>
@@ -606,12 +625,16 @@ export default function QuestionModal({ open, tile }) {
                     p: 1.5,
                     mb: 1.5,
                     borderRadius: 2,
-                    backgroundColor: 'rgba(255, 215, 0, 0.08)',
-                    border: '1px solid rgba(255, 215, 0, 0.4)',
+                    backgroundColor: "rgba(255, 215, 0, 0.08)",
+                    border: "1px solid rgba(255, 215, 0, 0.4)",
                   }}
                 >
-                  <Typography variant="body2" sx={{ fontWeight: 700, color: '#FFD700' }}>
-                    🔍 التلميح الإضافي {idx + 1} (خصم {idx === 0 ? '50%' : '75%'} من النقاط):
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 700, color: "#FFD700" }}
+                  >
+                    🔍 التلميح الإضافي {idx + 1} (خصم{" "}
+                    {idx === 0 ? "50%" : "75%"} من النقاط):
                   </Typography>
                   <Typography variant="body2" sx={{ fontWeight: 600, mt: 0.5 }}>
                     {hint}
@@ -623,7 +646,7 @@ export default function QuestionModal({ open, tile }) {
               {!isRevealed &&
                 !isTimesUp &&
                 hintsUsedCount < additionalHints.length && (
-                  <Box sx={{ textAlign: 'center', mt: 1.5 }}>
+                  <Box sx={{ textAlign: "center", mt: 1.5 }}>
                     <Button
                       size="medium"
                       variant="outlined"
@@ -633,11 +656,11 @@ export default function QuestionModal({ open, tile }) {
                       sx={{
                         fontWeight: 800,
                         borderRadius: 3,
-                        borderColor: '#FFD700',
-                        color: '#FFD700',
-                        '&:hover': {
-                          borderColor: '#FFE54C',
-                          backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        borderColor: "#FFD700",
+                        color: "#FFD700",
+                        "&:hover": {
+                          borderColor: "#FFE54C",
+                          backgroundColor: "rgba(255, 215, 0, 0.1)",
                         },
                       }}
                     >
@@ -649,9 +672,9 @@ export default function QuestionModal({ open, tile }) {
 
             {/* Open-Ended Input & Referee Controls */}
             {!isRevealed ? (
-              <Box sx={{ maxWidth: 520, mx: 'auto', mb: 3 }}>
+              <Box sx={{ maxWidth: 520, mx: "auto", mb: 3 }}>
                 {/* Text Input Field */}
-                <Box sx={{ display: 'flex', gap: 1.5, mb: 2 }}>
+                <Box sx={{ display: "flex", gap: 1.5, mb: 2 }}>
                   <TextField
                     fullWidth
                     size="medium"
@@ -662,14 +685,17 @@ export default function QuestionModal({ open, tile }) {
                       if (typedFeedback) setTypedFeedback(null);
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === "Enter") {
                         e.preventDefault();
                         handleTextAnswerSubmit();
                       }
                     }}
                     disabled={isAnswered || isTimesUp}
                     InputProps={{
-                      sx: { borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.05)' },
+                      sx: {
+                        borderRadius: 3,
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                      },
                     }}
                   />
                   <Button
@@ -677,8 +703,13 @@ export default function QuestionModal({ open, tile }) {
                     color="primary"
                     onClick={handleTextAnswerSubmit}
                     disabled={isAnswered || isTimesUp || !typedAnswer.trim()}
-                    endIcon={<SendIcon sx={{ transform: 'rotate(180deg)' }} />}
-                    sx={{ px: 3, fontWeight: 800, borderRadius: 3, minWidth: 120 }}
+                    endIcon={<SendIcon sx={{ transform: "rotate(180deg)" }} />}
+                    sx={{
+                      px: 3,
+                      fontWeight: 800,
+                      borderRadius: 3,
+                      minWidth: 120,
+                    }}
                   >
                     تأكيد
                   </Button>
@@ -686,15 +717,18 @@ export default function QuestionModal({ open, tile }) {
 
                 {typedFeedback && (
                   <Alert
-                    severity={typedFeedback.isCorrect ? 'success' : 'warning'}
-                    sx={{ mb: 2, borderRadius: 2.5, textAlign: 'right' }}
+                    severity={typedFeedback.isCorrect ? "success" : "warning"}
+                    sx={{ mb: 2, borderRadius: 2.5, textAlign: "right" }}
                   >
                     {typedFeedback.message}
                   </Alert>
                 )}
 
-                <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                <Divider sx={{ my: 2, borderColor: "rgba(255,255,255,0.1)" }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "text.secondary" }}
+                  >
                     أو
                   </Typography>
                 </Divider>
@@ -712,26 +746,26 @@ export default function QuestionModal({ open, tile }) {
                 </Button>
               </Box>
             ) : (
-              <Box sx={{ maxWidth: 550, mx: 'auto' }}>
+              <Box sx={{ maxWidth: 550, mx: "auto" }}>
                 <Paper
                   sx={{
                     p: 2.5,
                     mb: 3,
                     borderRadius: 3,
-                    backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                    border: '2px solid #00E5FF',
+                    backgroundColor: "rgba(0, 229, 255, 0.1)",
+                    border: "2px solid #00E5FF",
                   }}
                 >
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 900, color: '#00E5FF', mb: 0.5 }}
+                    sx={{ fontWeight: 900, color: "#00E5FF", mb: 0.5 }}
                   >
                     الشخصية: {questionItem.data.characterName}
                   </Typography>
                   {avatarConfig.hairStyle && (
                     <Typography
                       variant="caption"
-                      sx={{ color: 'text.secondary', display: 'block' }}
+                      sx={{ color: "text.secondary", display: "block" }}
                     >
                       المظهر: {avatarConfig.hairStyle}
                     </Typography>
@@ -740,7 +774,7 @@ export default function QuestionModal({ open, tile }) {
 
                 {!isAnswered && !isTimesUp && (
                   <Box
-                    sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}
+                    sx={{ display: "flex", justifyContent: "center", gap: 2 }}
                   >
                     <Button
                       variant="contained"
@@ -768,7 +802,7 @@ export default function QuestionModal({ open, tile }) {
         )}
 
         {/* --- TYPE 3: DIRECT QUESTION --- */}
-        {questionItem.kind === 'DIRECT' && (
+        {questionItem.kind === "DIRECT" && (
           <Box>
             <Typography
               variant="h5"
@@ -778,7 +812,7 @@ export default function QuestionModal({ open, tile }) {
             </Typography>
 
             {!isRevealed ? (
-              <Box sx={{ textAlign: 'center', py: 2 }}>
+              <Box sx={{ textAlign: "center", py: 2 }}>
                 <Button
                   variant="contained"
                   color="secondary"
@@ -797,13 +831,13 @@ export default function QuestionModal({ open, tile }) {
                     p: 2.5,
                     mb: 3,
                     borderRadius: 3,
-                    backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                    border: '2px solid #00E5FF',
+                    backgroundColor: "rgba(0, 229, 255, 0.1)",
+                    border: "2px solid #00E5FF",
                   }}
                 >
                   <Typography
                     variant="subtitle1"
-                    sx={{ fontWeight: 900, color: '#00E5FF', mb: 1 }}
+                    sx={{ fontWeight: 900, color: "#00E5FF", mb: 1 }}
                   >
                     الإجابة النموذجية:
                   </Typography>
@@ -813,7 +847,7 @@ export default function QuestionModal({ open, tile }) {
                   {questionItem.data.explanation && (
                     <Typography
                       variant="caption"
-                      sx={{ color: 'text.secondary' }}
+                      sx={{ color: "text.secondary" }}
                     >
                       {questionItem.data.explanation}
                     </Typography>
@@ -822,7 +856,7 @@ export default function QuestionModal({ open, tile }) {
 
                 {!isAnswered && !isTimesUp && (
                   <Box
-                    sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}
+                    sx={{ display: "flex", justifyContent: "center", gap: 2 }}
                   >
                     <Button
                       variant="contained"
