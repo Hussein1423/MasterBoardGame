@@ -19,7 +19,6 @@ export function calculateMovement(currentPosition, steps, currentLap, targetLaps
   for (let i = 1; i <= steps; i++) {
     pos = (pos + 1) % BOARD_SIZE;
     path.push(pos);
-    // If we reach index 0 (which corresponds to tile 1 after completing a full 30-tile circle)
     if (pos === 0) {
       lap += 1;
       lapCompletedInMove = true;
@@ -69,86 +68,72 @@ export function isGameOver(players, targetLaps) {
  */
 export function getRankings(players) {
   return [...players].sort((a, b) => {
-    // 1. Highest score
     if (b.score !== a.score) {
       return b.score - a.score;
     }
-    // 2. Highest lap
     if (b.lap !== a.lap) {
       return b.lap - a.lap;
     }
-    // 3. Highest position
     return b.position - a.position;
   });
 }
 
 /**
- * Draws a unique, non-repeating question from the pool across MCQ, SILHOUETTE, and DIRECT
+ * Draws a unique, non-repeating question from the entire match-wide question pool
  */
-export function drawUniqueQuestion(answeredQuestionIds = []) {
-  const rand = Math.random();
-  const preferredKind =
-    rand < 0.35 ? 'MCQ' : rand < 0.65 ? 'SILHOUETTE' : 'DIRECT';
+export function drawUniqueQuestion(usedQuestionIds = []) {
+  const allQuestions = [
+    ...MCQ_QUESTIONS.map((q) => ({ kind: 'MCQ', data: q })),
+    ...SILHOUETTE_QUESTIONS.map((q) => ({ kind: 'SILHOUETTE', data: q })),
+    ...DIRECT_QUESTIONS.map((q) => ({ kind: 'DIRECT', data: q })),
+  ];
 
-  let pool =
-    preferredKind === 'MCQ'
-      ? MCQ_QUESTIONS
-      : preferredKind === 'SILHOUETTE'
-      ? SILHOUETTE_QUESTIONS
-      : DIRECT_QUESTIONS;
+  // 1. Try to find unused questions across all categories in the entire match
+  const unusedQuestions = allQuestions.filter(
+    (item) => !usedQuestionIds.includes(item.data.id)
+  );
 
-  let available = pool.filter((q) => !answeredQuestionIds.includes(q.id));
-
-  // If preferred pool exhausted, look across all question pools
-  if (available.length === 0) {
-    const allQuestions = [
-      ...MCQ_QUESTIONS.map((q) => ({ kind: 'MCQ', data: q })),
-      ...SILHOUETTE_QUESTIONS.map((q) => ({ kind: 'SILHOUETTE', data: q })),
-      ...DIRECT_QUESTIONS.map((q) => ({ kind: 'DIRECT', data: q })),
-    ];
-    const allAvailable = allQuestions.filter((item) => !answeredQuestionIds.includes(item.data.id));
-
-    if (allAvailable.length > 0) {
-      const chosen = allAvailable[Math.floor(Math.random() * allAvailable.length)];
-      return {
-        kind: chosen.kind,
-        data: chosen.data,
-        resetPool: false,
-      };
-    }
-
-    // If completely exhausted, reset pool
-    const fallbackChosen = pool[Math.floor(Math.random() * pool.length)];
+  if (unusedQuestions.length > 0) {
+    const selected =
+      unusedQuestions[Math.floor(Math.random() * unusedQuestions.length)];
     return {
-      kind: preferredKind,
-      data: fallbackChosen,
-      resetPool: true,
+      kind: selected.kind,
+      data: selected.data,
+      newUsedIds: [...usedQuestionIds, selected.data.id],
     };
   }
 
-  const chosenData = available[Math.floor(Math.random() * available.length)];
+  // 2. Absolute Fallback: If EVERY question in the match has been answered, pick random without clearing usedQuestionIds
+  const fallback =
+    allQuestions[Math.floor(Math.random() * allQuestions.length)];
   return {
-    kind: preferredKind,
-    data: chosenData,
-    resetPool: false,
+    kind: fallback.kind,
+    data: fallback.data,
+    newUsedIds: usedQuestionIds,
   };
 }
 
 /**
- * Draws a unique speed challenge from the pool
+ * Draws a unique speed challenge from the match-wide challenge pool
  */
-export function drawUniqueChallenge(answeredChallengeIds = []) {
-  let available = SPEED_CHALLENGES.filter((c) => !answeredChallengeIds.includes(c.id));
-  let resetPool = false;
+export function drawUniqueChallenge(usedChallengeIds = []) {
+  const unusedChallenges = SPEED_CHALLENGES.filter(
+    (c) => !usedChallengeIds.includes(c.id)
+  );
 
-  if (available.length === 0) {
-    available = SPEED_CHALLENGES;
-    resetPool = true;
+  if (unusedChallenges.length > 0) {
+    const selected =
+      unusedChallenges[Math.floor(Math.random() * unusedChallenges.length)];
+    return {
+      data: selected,
+      newUsedChallengeIds: [...usedChallengeIds, selected.id],
+    };
   }
 
-  const chosen = available[Math.floor(Math.random() * available.length)];
+  const fallback =
+    SPEED_CHALLENGES[Math.floor(Math.random() * SPEED_CHALLENGES.length)];
   return {
-    data: chosen,
-    resetPool,
+    data: fallback,
+    newUsedChallengeIds: usedChallengeIds,
   };
 }

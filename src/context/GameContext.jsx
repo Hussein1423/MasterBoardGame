@@ -160,7 +160,7 @@ export function GameProvider({ children }) {
           type: 'ADD_POINTS',
           payload: {
             playerIndex: pIdx,
-            points: finalPoints,
+            points: Math.round(finalPoints),
             reason: reason || 'إجابة صحيحة',
           },
         });
@@ -195,7 +195,7 @@ export function GameProvider({ children }) {
           type: 'ADD_POINTS',
           payload: {
             playerIndex: state.activePlayerIndex,
-            points,
+            points: Math.round(points),
             reason: reason || 'اجتياز التحدي بنجاح',
           },
         });
@@ -214,6 +214,16 @@ export function GameProvider({ children }) {
 
       if (buff.type === 'ADVANCE') {
         advanceStepsDirectly(buff.tiles);
+      } else if (buff.type === 'DIRECT_POINTS') {
+        dispatch({
+          type: 'ADD_POINTS',
+          payload: {
+            playerIndex: state.activePlayerIndex,
+            points: buff.points,
+            reason: buff.name,
+          },
+        });
+        dispatch({ type: 'NEXT_TURN' });
       } else {
         dispatch({
           type: 'APPLY_BUFF',

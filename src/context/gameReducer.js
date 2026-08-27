@@ -79,7 +79,9 @@ export const initialGameState = {
   isMoving: false,
   lastRollValue: null,
   activeModal: null, // { type, tile, question, challenge, destinationIndex }
+  usedQuestionIds: [],
   answeredQuestionIds: [],
+  usedChallengeIds: [],
   answeredChallengeIds: [],
   turnLog: [],
   notification: null, // { text, type: 'info' | 'success' | 'warning' | 'error' }
@@ -116,13 +118,25 @@ export function gameReducer(state, action) {
         isMoving: false,
         lastRollValue: null,
         activeModal: null,
+        usedQuestionIds: [],
         answeredQuestionIds: [],
+        usedChallengeIds: [],
         answeredChallengeIds: [],
         turnLog: [`بدأت اللعبة! الهدف: إتمام ${targetLaps} دورة حول الخارطة.`],
         notification: {
           text: `انطلقت المنافسة! دور ${players[0].name}`,
           type: 'info',
         },
+      };
+    }
+
+    case 'MARK_QUESTION_USED': {
+      const qId = action.payload;
+      const already = state.usedQuestionIds.includes(qId);
+      return {
+        ...state,
+        usedQuestionIds: already ? state.usedQuestionIds : [...state.usedQuestionIds, qId],
+        answeredQuestionIds: already ? state.answeredQuestionIds : [...state.answeredQuestionIds, qId],
       };
     }
 
@@ -256,15 +270,13 @@ export function gameReducer(state, action) {
 
       // Pre-draw non-repeating question if QUIZ tile
       if (tileData.type.type === 'QUIZ') {
-        const drawn = drawUniqueQuestion(state.answeredQuestionIds);
-        const newAnsweredIds = drawn.resetPool
-          ? [drawn.data.id]
-          : [...state.answeredQuestionIds, drawn.data.id];
+        const drawn = drawUniqueQuestion(state.usedQuestionIds);
 
         return {
           ...state,
           isMoving: false,
-          answeredQuestionIds: newAnsweredIds,
+          usedQuestionIds: drawn.newUsedIds,
+          answeredQuestionIds: drawn.newUsedIds,
           activeModal: {
             type: 'QUIZ',
             tile: tileData,
@@ -276,15 +288,13 @@ export function gameReducer(state, action) {
 
       // Pre-draw non-repeating challenge if CHALLENGE tile
       if (tileData.type.type === 'CHALLENGE') {
-        const drawn = drawUniqueChallenge(state.answeredChallengeIds);
-        const newChallengeIds = drawn.resetPool
-          ? [drawn.data.id]
-          : [...state.answeredChallengeIds, drawn.data.id];
+        const drawn = drawUniqueChallenge(state.usedChallengeIds);
 
         return {
           ...state,
           isMoving: false,
-          answeredChallengeIds: newChallengeIds,
+          usedChallengeIds: drawn.newUsedChallengeIds,
+          answeredChallengeIds: drawn.newUsedChallengeIds,
           activeModal: {
             type: 'CHALLENGE',
             tile: tileData,
@@ -319,7 +329,7 @@ export function gameReducer(state, action) {
         if (idx === playerIndex) {
           return {
             ...p,
-            score: Math.max(0, parseFloat((p.score + points).toFixed(1))),
+            score: Math.max(0, Math.round(p.score + points)),
           };
         }
         return p;
@@ -329,7 +339,7 @@ export function gameReducer(state, action) {
         ...state,
         players: updatedPlayers,
         turnLog: [
-          `${state.players[playerIndex].name} حصل على ${points} نقطة (${reason}).`,
+          `✨ ${state.players[playerIndex].name} حصل على +${points} نقطة (${reason}).`,
           ...state.turnLog,
         ],
       };
@@ -341,7 +351,7 @@ export function gameReducer(state, action) {
         if (idx === playerIndex) {
           return {
             ...p,
-            score: Math.max(0, parseFloat((p.score - points).toFixed(1))),
+            score: Math.max(0, Math.round(p.score - points)),
           };
         }
         return p;
@@ -351,7 +361,7 @@ export function gameReducer(state, action) {
         ...state,
         players: updatedPlayers,
         turnLog: [
-          `⚠️ خسر ${state.players[playerIndex].name} ${points} نقطة (${reason}).`,
+          `⚠️ خسر ${state.players[playerIndex].name} -${points} نقطة (${reason}).`,
           ...state.turnLog,
         ],
       };
