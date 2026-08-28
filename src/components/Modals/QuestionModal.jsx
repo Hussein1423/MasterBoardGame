@@ -20,9 +20,11 @@ import HelpIcon from '@mui/icons-material/Help';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FlipCameraAndroidIcon from '@mui/icons-material/FlipCameraAndroid';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import SecurityIcon from '@mui/icons-material/Security';
 import SendIcon from '@mui/icons-material/Send';
 import TimerProgress from '../Common/TimerProgress';
 import { useGame } from '../../context/GameContext';
+import { soundEffects } from '../../utils/soundEffects';
 
 // Helper function to normalize Arabic text for forgiving comparison
 function normalizeArabic(text) {
@@ -41,6 +43,8 @@ export default function QuestionModal({ open, tile }) {
   const { state, dispatch, resolveQuiz, deflectQuestion } = useGame();
   const { players, activePlayerIndex, activeModal } = state;
   const activePlayer = players[activePlayerIndex];
+  const opponentIdx = 1 - activePlayerIndex;
+  const opponent = players[opponentIdx];
 
   // The active question is strictly locked in state.activeModal.question
   const questionItem = activeModal?.question;
@@ -53,6 +57,7 @@ export default function QuestionModal({ open, tile }) {
   const [isRevealed, setIsRevealed] = useState(false);
   const [hintsUsedCount, setHintsUsedCount] = useState(0); // 0, 1, or 2
   const [deflectedToPlayerIdx, setDeflectedToPlayerIdx] = useState(null);
+  const [shieldBlockedNotice, setShieldBlockedNotice] = useState(null);
 
   // Strict null safety check
   if (!open || !questionItem || !questionItem.data) {
@@ -112,30 +117,32 @@ export default function QuestionModal({ open, tile }) {
     setTimeout(() => {
       if (deflectedToPlayerIdx !== null) {
         if (isCorrect) {
-          // Target opponent gets full points; original player gets 0
-          resolveQuiz(
-            pts,
-            true,
-            `إجابة صحيحة لسؤال محوّل (+${pts})`,
-            deflectedToPlayerIdx
-          );
+          // If targeted opponent answers CORRECTLY:
+          // Player who used deflection card gets FULL points (+pts); Target opponent gets 0 points
+          soundEffects.playSuccess();
+          dispatch({
+            type: 'ADD_POINTS',
+            payload: {
+              playerIndex: activePlayerIndex,
+              points: pts,
+              reason: `مكافأة نجاح تحويل السؤال (${answeringPlayer.name} أجاب بشكل صحيح)`,
+            },
+          });
+          dispatch({ type: 'NEXT_TURN' });
         } else {
-          // Target opponent loses half points (-0.5 * pts); original player gets full points (+pts)
+          // If targeted opponent FAILS:
+          // Target opponent loses HALF points (-0.5 * pts); Player who used deflection card gets 0 points
+          soundEffects.playFail();
           const penaltyPoints = Math.round(pts * 0.5);
           dispatch({
             type: 'DEDUCT_POINTS',
             payload: {
               playerIndex: deflectedToPlayerIdx,
               points: penaltyPoints,
-              reason: `إخفاق في سؤال محوّل (-${penaltyPoints})`,
+              reason: `إخفاق في إجابة سؤال محوّل (-${penaltyPoints})`,
             },
           });
-          resolveQuiz(
-            pts,
-            true,
-            `مكافأة تحويل السؤال بعد إخفاق الخصم (+${pts})`,
-            activePlayerIndex
-          );
+          dispatch({ type: 'NEXT_TURN' });
         }
       } else {
         resolveQuiz(pts, isCorrect, `سؤال أنمي (${questionItem.data.anime || ''})`);
@@ -151,30 +158,32 @@ export default function QuestionModal({ open, tile }) {
     setTimeout(() => {
       if (deflectedToPlayerIdx !== null) {
         if (isCorrect) {
-          // Target opponent gets full points; original player gets 0
-          resolveQuiz(
-            pts,
-            true,
-            `إجابة صحيحة لسؤال محوّل (+${pts})`,
-            deflectedToPlayerIdx
-          );
+          // If targeted opponent answers CORRECTLY:
+          // Player who used deflection card gets FULL points (+pts); Target opponent gets 0 points
+          soundEffects.playSuccess();
+          dispatch({
+            type: 'ADD_POINTS',
+            payload: {
+              playerIndex: activePlayerIndex,
+              points: pts,
+              reason: `مكافأة نجاح تحويل السؤال (${answeringPlayer.name} أجاب بشكل صحيح)`,
+            },
+          });
+          dispatch({ type: 'NEXT_TURN' });
         } else {
-          // Target opponent loses half points (-0.5 * pts); original player gets full points (+pts)
+          // If targeted opponent FAILS:
+          // Target opponent loses HALF points (-0.5 * pts); Player who used deflection card gets 0 points
+          soundEffects.playFail();
           const penaltyPoints = Math.round(pts * 0.5);
           dispatch({
             type: 'DEDUCT_POINTS',
             payload: {
               playerIndex: deflectedToPlayerIdx,
               points: penaltyPoints,
-              reason: `إخفاق في سؤال محوّل (-${penaltyPoints})`,
+              reason: `إخفاق في إجابة سؤال محوّل (-${penaltyPoints})`,
             },
           });
-          resolveQuiz(
-            pts,
-            true,
-            `مكافأة تحويل السؤال بعد إخفاق الخصم (+${pts})`,
-            activePlayerIndex
-          );
+          dispatch({ type: 'NEXT_TURN' });
         }
       } else {
         resolveQuiz(
@@ -218,7 +227,8 @@ export default function QuestionModal({ open, tile }) {
 
     setTimeout(() => {
       if (deflectedToPlayerIdx !== null) {
-        // Target opponent loses half points (-0.5 * pts); original player gets full points (+pts)
+        // Targeted opponent ran out of time: loses HALF points (-0.5 * pts); deflecting player gets 0 points
+        soundEffects.playFail();
         const pts = effectivePoints;
         const penaltyPoints = Math.round(pts * 0.5);
         dispatch({
@@ -229,12 +239,7 @@ export default function QuestionModal({ open, tile }) {
             reason: `انتهاء الوقت لسؤال محوّل (-${penaltyPoints})`,
           },
         });
-        resolveQuiz(
-          pts,
-          true,
-          `مكافأة تحويل السؤال بعد انتهاء وقت الخصم (+${pts})`,
-          activePlayerIndex
-        );
+        dispatch({ type: 'NEXT_TURN' });
       } else {
         resolveQuiz(0, false, 'انتهى الوقت المحدد للسؤال');
       }
@@ -242,8 +247,16 @@ export default function QuestionModal({ open, tile }) {
   };
 
   const handleDeflect = (targetIdx) => {
-    deflectQuestion(targetIdx);
-    setDeflectedToPlayerIdx(targetIdx);
+    const result = deflectQuestion(targetIdx);
+    if (result?.blockedByShield) {
+      setShieldBlockedNotice(
+        `🛡️ تم استخدام درع الحماية لصد تحويل السؤال من قِبل ${result.targetName}! يعود السؤال إليك للإجابة عليه.`
+      );
+      setDeflectedToPlayerIdx(null);
+    } else {
+      setDeflectedToPlayerIdx(targetIdx);
+      setShieldBlockedNotice(null);
+    }
   };
 
   const handleRevealNextHint = () => {
@@ -326,7 +339,7 @@ export default function QuestionModal({ open, tile }) {
                 : questionItem.kind === 'SILHOUETTE'
                 ? 'خمن الشخصية من الظل والتلميحات'
                 : 'سؤال أنمي مباشر (Direct)'}
-              • الخانة {tile?.number} ({tile?.title || ''})
+              {' • '}أنمي: {questionItem.data.anime || ''} • الخانة {tile?.number} ({tile?.title || ''})
             </Typography>
           </Box>
         </Box>
@@ -361,6 +374,24 @@ export default function QuestionModal({ open, tile }) {
       </Box>
 
       <DialogContent sx={{ py: 3, position: 'relative' }}>
+        {/* Shield Block Notice */}
+        {shieldBlockedNotice && (
+          <Alert
+            icon={<SecurityIcon sx={{ color: '#00E676' }} />}
+            severity="info"
+            sx={{
+              mb: 3,
+              borderRadius: 3,
+              fontWeight: 900,
+              backgroundColor: 'rgba(0, 230, 118, 0.15)',
+              border: '1.5px solid #00E676',
+              color: '#00E676',
+            }}
+          >
+            {shieldBlockedNotice}
+          </Alert>
+        )}
+
         {/* Answering Player & Timer Row */}
         <Box
           sx={{
@@ -414,14 +445,15 @@ export default function QuestionModal({ open, tile }) {
           </Alert>
         )}
 
-        {/* Deflect Question Option if Available */}
+        {/* Direct 1v1 Deflect Button */}
         {activePlayer?.inventory?.deflections > 0 &&
           deflectedToPlayerIdx === null &&
+          !opponent?.hasFinished &&
           !isAnswered &&
           !isTimesUp && (
             <Paper
               sx={{
-                p: 1.8,
+                p: 2,
                 mb: 3,
                 borderRadius: 3,
                 backgroundColor: 'rgba(224, 64, 251, 0.15)',
@@ -440,33 +472,30 @@ export default function QuestionModal({ open, tile }) {
                   variant="body2"
                   sx={{ fontWeight: 800, color: '#E040FB' }}
                 >
-                  لديك مرآة تحويل! هل ترغب في توجيه هذا السؤال لأحد منافسيك؟
+                  لديك مرآة تحويل! هل ترغب في تحويل السؤال لمنافسك {opponent.name}؟
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                {players
-                  .map((p, idx) => ({ ...p, originalIdx: idx }))
-                  .filter((p) => p.originalIdx !== activePlayerIndex)
-                  .map((p) => (
-                    <Button
-                      key={p.id}
-                      size="small"
-                      variant="outlined"
-                      onClick={() => handleDeflect(p.originalIdx)}
-                      sx={{
-                        borderColor: p.color,
-                        color: p.color,
-                        fontWeight: 900,
-                        '&:hover': {
-                          backgroundColor: `${p.color}22`,
-                          borderColor: p.color,
-                        },
-                      }}
-                    >
-                      تحويل لـ {p.name}
-                    </Button>
-                  ))}
-              </Box>
+              <Button
+                size="medium"
+                variant="contained"
+                onClick={() => handleDeflect(opponentIdx)}
+                sx={{
+                  backgroundColor: opponent.color,
+                  color: '#FFFFFF',
+                  fontWeight: 900,
+                  borderRadius: 3,
+                  px: 3,
+                  py: 1,
+                  boxShadow: `0 0 15px ${opponent.color}66`,
+                  '&:hover': {
+                    backgroundColor: opponent.color,
+                    filter: 'brightness(1.15)',
+                    boxShadow: `0 0 20px ${opponent.color}`,
+                  },
+                }}
+              >
+                تحويل السؤال إلى {opponent.name} {opponent.inventory?.shields > 0 ? '🛡️' : ''}
+              </Button>
             </Paper>
           )}
 

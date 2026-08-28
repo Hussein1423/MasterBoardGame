@@ -37,23 +37,44 @@ export function calculateMovement(currentPosition, steps, currentLap, targetLaps
 }
 
 /**
- * Determines the next active player index, strictly skipping finished and frozen players
+ * Bulletproof Turn Progression lookup skipping finished and unfreezing frozen players
+ * Returns -1 if all players have completed their laps
  */
-export function getNextPlayerIndex(players, currentIndex, targetLaps) {
-  let nextIdx = (currentIndex + 1) % players.length;
-  let loopCheck = 0;
+export function getNextActivePlayerIndex(players, currentIndex, totalLaps) {
+  let nextIndex = (currentIndex + 1) % players.length;
+  let checkedCount = 0;
 
-  while (loopCheck < players.length) {
-    const candidate = players[nextIdx];
-    const isFinished = candidate.lap >= targetLaps || candidate.hasFinished;
-    if (!isFinished) {
-      return nextIdx;
+  while (checkedCount < players.length) {
+    const candidate = players[nextIndex];
+    const hasFinished = candidate.lap >= totalLaps || candidate.hasFinished;
+
+    // Skip players who already finished the game
+    if (hasFinished) {
+      nextIndex = (nextIndex + 1) % players.length;
+      checkedCount++;
+      continue;
     }
-    nextIdx = (nextIdx + 1) % players.length;
-    loopCheck++;
+
+    // Handle frozen players who haven't finished yet
+    if (candidate.debuffs?.isFrozen || candidate.isFrozen) {
+      // Unfreeze the player for their upcoming round, but skip their current turn
+      if (candidate.debuffs) candidate.debuffs.isFrozen = false;
+      candidate.isFrozen = false;
+      nextIndex = (nextIndex + 1) % players.length;
+      checkedCount++;
+      continue;
+    }
+
+    // Found a valid active player
+    return nextIndex;
   }
 
-  return (currentIndex + 1) % players.length;
+  // If all players are finished or no valid player found -> Game Ends
+  return -1;
+}
+
+export function getNextPlayerIndex(players, currentIndex, targetLaps) {
+  return getNextActivePlayerIndex(players, currentIndex, targetLaps);
 }
 
 /**

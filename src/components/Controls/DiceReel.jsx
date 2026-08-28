@@ -3,10 +3,11 @@ import { Box, Typography, Paper, Button, Chip } from "@mui/material";
 import { motion } from "framer-motion";
 import CasinoIcon from "@mui/icons-material/Casino";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { useGame } from "../../context/GameContext";
 
 export default function DiceReel() {
-  const { state, rollDice } = useGame();
+  const { state, dispatch, rollDice } = useGame();
   const {
     isRolling,
     isMoving,
@@ -37,6 +38,18 @@ export default function DiceReel() {
     isRolling || isMoving || !!activeModal || activePlayer.hasFinished;
 
   const diceCardSymbols = ["➊", "➋", "➌", "➍", "➎", "➏"];
+
+  const handleRefereeSkipTurn = () => {
+    dispatch({ type: "CLOSE_MODAL" });
+    dispatch({ type: "NEXT_TURN" });
+    dispatch({
+      type: "SET_NOTIFICATION",
+      payload: {
+        text: `⚖️ تم تخطي دور ${activePlayer.name} بواسطة الحكم`,
+        type: "warning",
+      },
+    });
+  };
 
   return (
     <Paper
@@ -140,8 +153,17 @@ export default function DiceReel() {
         </motion.div>
       </Box>
 
-      {/* Roll Button */}
-      <Box sx={{ mb: 2 }}>
+      {/* Action Buttons: Roll Dice & Referee Skip Turn */}
+      <Box
+        sx={{
+          mb: 2,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2,
+          flexWrap: "wrap",
+        }}
+      >
         <Button
           variant="contained"
           size="large"
@@ -177,6 +199,33 @@ export default function DiceReel() {
             : isMoving
               ? "الرمز يتحرك في الخارطة... 🏃"
               : "تحريك / Roll 🎲"}
+        </Button>
+
+        {/* Referee Turn Skip Button */}
+        <Button
+          variant="outlined"
+          color="warning"
+          size="large"
+          onClick={handleRefereeSkipTurn}
+          disabled={isRolling || isMoving}
+          startIcon={<SkipNextIcon sx={{ fontSize: 26 }} />}
+          sx={{
+            px: 3.5,
+            py: 1.6,
+            fontSize: "1.05rem",
+            fontWeight: 900,
+            borderRadius: 3.5,
+            borderColor: "rgba(255, 152, 0, 0.6)",
+            color: "#FFB74D",
+            background: "rgba(255, 152, 0, 0.05)",
+            "&:hover": {
+              borderColor: "#FFA726",
+              backgroundColor: "rgba(255, 152, 0, 0.15)",
+              boxShadow: "0 0 20px rgba(255, 152, 0, 0.35)",
+            },
+          }}
+        >
+          تخطي الدور (الحكم) ⏩
         </Button>
       </Box>
 

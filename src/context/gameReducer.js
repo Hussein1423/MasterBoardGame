@@ -1,21 +1,21 @@
 import {
-  getNextPlayerIndex,
+  getNextActivePlayerIndex,
   isGameOver,
   drawUniqueQuestion,
   drawUniqueChallenge,
   BOARD_SIZE,
-} from '../utils/gameLogic';
+} from "../utils/gameLogic";
 
 export const initialGameState = {
-  screen: 'SETUP', // 'SETUP' | 'PLAYING' | 'VICTORY'
+  screen: "SETUP", // 'SETUP' | 'PLAYING' | 'VICTORY'
   targetLaps: 1,
   players: [
     {
       id: 1,
-      name: 'اللاعب 1 (ناروتو)',
-      avatarId: 'naruto',
-      symbol: '🍥',
-      color: '#FF6B00',
+      name: "اللاعب 1 (ناروتو)",
+      avatarId: "naruto",
+      symbol: "🍥",
+      color: "#FF6B00",
       position: 0,
       lap: 0,
       score: 0,
@@ -33,31 +33,10 @@ export const initialGameState = {
     },
     {
       id: 2,
-      name: 'اللاعب 2 (لوفي)',
-      avatarId: 'luffy',
-      symbol: '🍖',
-      color: '#E53935',
-      position: 0,
-      lap: 0,
-      score: 0,
-      inventory: {
-        shields: 0,
-        doublePoints: false,
-        bonusTime: false,
-        deflections: 0,
-      },
-      debuffs: {
-        isFrozen: false,
-        halfTime: false,
-      },
-      hasFinished: false,
-    },
-    {
-      id: 3,
-      name: 'اللاعب 3 (إيرين)',
-      avatarId: 'eren',
-      symbol: '🗝️',
-      color: '#00897B',
+      name: "اللاعب 2 (لوفي)",
+      avatarId: "luffy",
+      symbol: "🍖",
+      color: "#E53935",
       position: 0,
       lap: 0,
       score: 0,
@@ -89,13 +68,13 @@ export const initialGameState = {
 
 export function gameReducer(state, action) {
   switch (action.type) {
-    case 'START_GAME': {
+    case "START_GAME": {
       const { players, targetLaps } = action.payload;
       return {
         ...state,
-        screen: 'PLAYING',
+        screen: "PLAYING",
         targetLaps,
-        players: players.map((p, idx) => ({
+        players: players.slice(0, 2).map((p, idx) => ({
           ...p,
           id: idx + 1,
           position: 0,
@@ -122,32 +101,38 @@ export function gameReducer(state, action) {
         answeredQuestionIds: [],
         usedChallengeIds: [],
         answeredChallengeIds: [],
-        turnLog: [`بدأت اللعبة! الهدف: إتمام ${targetLaps} دورة حول الخارطة.`],
+        turnLog: [
+          `بدأت المواجهة 1v1! الهدف: إتمام ${targetLaps} دورة حول الخارطة.`,
+        ],
         notification: {
-          text: `انطلقت المنافسة! دور ${players[0].name}`,
-          type: 'info',
+          text: `انطلقت المواجهة! دور ${players[0].name}`,
+          type: "info",
         },
       };
     }
 
-    case 'MARK_QUESTION_USED': {
+    case "MARK_QUESTION_USED": {
       const qId = action.payload;
       const already = state.usedQuestionIds.includes(qId);
       return {
         ...state,
-        usedQuestionIds: already ? state.usedQuestionIds : [...state.usedQuestionIds, qId],
-        answeredQuestionIds: already ? state.answeredQuestionIds : [...state.answeredQuestionIds, qId],
+        usedQuestionIds: already
+          ? state.usedQuestionIds
+          : [...state.usedQuestionIds, qId],
+        answeredQuestionIds: already
+          ? state.answeredQuestionIds
+          : [...state.answeredQuestionIds, qId],
       };
     }
 
-    case 'SET_ROLLING': {
+    case "SET_ROLLING": {
       return {
         ...state,
         isRolling: action.payload,
       };
     }
 
-    case 'SET_ROLL_RESULT': {
+    case "SET_ROLL_RESULT": {
       return {
         ...state,
         isRolling: false,
@@ -155,14 +140,14 @@ export function gameReducer(state, action) {
       };
     }
 
-    case 'START_MOVING': {
+    case "START_MOVING": {
       return {
         ...state,
         isMoving: true,
       };
     }
 
-    case 'UPDATE_PLAYER_POSITION': {
+    case "UPDATE_PLAYER_POSITION": {
       const { playerIndex, newPosition, newLap } = action.payload;
       const updatedPlayers = state.players.map((p, idx) => {
         if (idx === playerIndex) {
@@ -183,68 +168,62 @@ export function gameReducer(state, action) {
       };
     }
 
-    case 'FINISH_MOVEMENT': {
+    case "FINISH_MOVEMENT": {
       const { tileData, destinationIndex } = action.payload;
       const activePlayer = state.players[state.activePlayerIndex];
 
-      // Check if all players completed the target laps
+      // Check if both players completed target laps
       if (isGameOver(state.players, state.targetLaps)) {
         return {
           ...state,
           isMoving: false,
-          screen: 'VICTORY',
+          screen: "VICTORY",
           activeModal: null,
           turnLog: [
-            `🏆 أنهى جميع اللاعبين السباق! الانتقال إلى منصة التتويج!`,
+            `🏆 أنهى البطلان السباق! الانتقال إلى منصة التتويج!`,
             ...state.turnLog,
           ],
         };
       }
 
-      // If landed on safe tile, turn ends immediately and passes to next eligible player
-      if (tileData.type.type === 'SAFE') {
+      // If landed on safe tile, turn ends immediately and passes to opponent
+      if (tileData.type.type === "SAFE") {
         let updatedPlayers = [...state.players];
-        let nextIdx = (state.activePlayerIndex + 1) % state.players.length;
-        let loopCheck = 0;
         let logAdditions = [];
 
-        while (loopCheck < state.players.length) {
-          const candidate = updatedPlayers[nextIdx];
-          const isFinished = candidate.lap >= state.targetLaps || candidate.hasFinished;
-
-          if (isFinished) {
-            nextIdx = (nextIdx + 1) % state.players.length;
-            loopCheck++;
-            continue;
+        // Check for unfreezing during search
+        for (let i = 0; i < updatedPlayers.length; i++) {
+          const checkIdx =
+            (state.activePlayerIndex + 1 + i) % updatedPlayers.length;
+          const candidate = updatedPlayers[checkIdx];
+          if (
+            !candidate.hasFinished &&
+            candidate.lap < state.targetLaps &&
+            candidate.debuffs?.isFrozen
+          ) {
+            logAdditions.push(
+              `❄️ تم تخطي دور ${candidate.name} بسبب تأثير التجميد.`,
+            );
           }
-
-          if (candidate.debuffs.isFrozen) {
-            logAdditions.push(`❄️ تم تخطي دور ${candidate.name} بسبب تأثير التجميد.`);
-            updatedPlayers = updatedPlayers.map((p, idx) => {
-              if (idx === nextIdx) {
-                return {
-                  ...p,
-                  debuffs: { ...p.debuffs, isFrozen: false },
-                };
-              }
-              return p;
-            });
-            nextIdx = (nextIdx + 1) % state.players.length;
-            loopCheck++;
-            continue;
-          }
-
-          break;
         }
 
-        if (isGameOver(updatedPlayers, state.targetLaps)) {
+        const nextIdx = getNextActivePlayerIndex(
+          updatedPlayers,
+          state.activePlayerIndex,
+          state.targetLaps,
+        );
+
+        if (nextIdx === -1 || isGameOver(updatedPlayers, state.targetLaps)) {
           return {
             ...state,
             players: updatedPlayers,
             isMoving: false,
-            screen: 'VICTORY',
+            screen: "VICTORY",
             activeModal: null,
-            turnLog: ['🏆 اكتملت جميع الدورات! مرحباً بكم في منصة التتويج.', ...state.turnLog],
+            turnLog: [
+              "🏆 اكتملت جميع الدورات! مرحباً بكم في منصة التتويج.",
+              ...state.turnLog,
+            ],
           };
         }
 
@@ -263,13 +242,13 @@ export function gameReducer(state, action) {
           ],
           notification: {
             text: `${activePlayer.name} في منطقة آمنة. الدور الآن لـ ${nextPlayer.name}`,
-            type: 'info',
+            type: "info",
           },
         };
       }
 
       // Pre-draw non-repeating question if QUIZ tile
-      if (tileData.type.type === 'QUIZ') {
+      if (tileData.type.type === "QUIZ") {
         const drawn = drawUniqueQuestion(state.usedQuestionIds);
 
         return {
@@ -278,7 +257,7 @@ export function gameReducer(state, action) {
           usedQuestionIds: drawn.newUsedIds,
           answeredQuestionIds: drawn.newUsedIds,
           activeModal: {
-            type: 'QUIZ',
+            type: "QUIZ",
             tile: tileData,
             question: { kind: drawn.kind, data: drawn.data },
             destinationIndex,
@@ -287,7 +266,7 @@ export function gameReducer(state, action) {
       }
 
       // Pre-draw non-repeating challenge if CHALLENGE tile
-      if (tileData.type.type === 'CHALLENGE') {
+      if (tileData.type.type === "CHALLENGE") {
         const drawn = drawUniqueChallenge(state.usedChallengeIds);
 
         return {
@@ -296,7 +275,7 @@ export function gameReducer(state, action) {
           usedChallengeIds: drawn.newUsedChallengeIds,
           answeredChallengeIds: drawn.newUsedChallengeIds,
           activeModal: {
-            type: 'CHALLENGE',
+            type: "CHALLENGE",
             tile: tileData,
             challenge: drawn.data,
             destinationIndex,
@@ -316,14 +295,14 @@ export function gameReducer(state, action) {
       };
     }
 
-    case 'CLOSE_MODAL': {
+    case "CLOSE_MODAL": {
       return {
         ...state,
         activeModal: null,
       };
     }
 
-    case 'ADD_POINTS': {
+    case "ADD_POINTS": {
       const { playerIndex, points, reason } = action.payload;
       const updatedPlayers = state.players.map((p, idx) => {
         if (idx === playerIndex) {
@@ -345,7 +324,7 @@ export function gameReducer(state, action) {
       };
     }
 
-    case 'DEDUCT_POINTS': {
+    case "DEDUCT_POINTS": {
       const { playerIndex, points, reason } = action.payload;
       const updatedPlayers = state.players.map((p, idx) => {
         if (idx === playerIndex) {
@@ -367,15 +346,39 @@ export function gameReducer(state, action) {
       };
     }
 
-    case 'APPLY_BUFF': {
+    case "UPDATE_PLAYER_SCORE": {
+      const { playerId, newPoints } = action.payload;
+      const finalPoints = Math.max(0, Math.round(Number(newPoints) || 0));
+      const targetPlayer = state.players.find((p) => p.id === playerId);
+      const updatedPlayers = state.players.map((p) =>
+        p.id === playerId
+          ? { ...p, score: finalPoints, points: finalPoints }
+          : p,
+      );
+
+      return {
+        ...state,
+        players: updatedPlayers,
+        turnLog: [
+          `⚖️ تم تعديل نقاط ${targetPlayer?.name || "اللاعب"} إلى ${finalPoints} نقطة بواسطة الحكم.`,
+          ...state.turnLog,
+        ],
+        notification: {
+          text: `⚖️ تم تعديل نقاط ${targetPlayer?.name || "اللاعب"} إلى ${finalPoints} نقطة بواسطة الحكم.`,
+          type: "info",
+        },
+      };
+    }
+
+    case "APPLY_BUFF": {
       const { playerIndex, buff } = action.payload;
       const updatedPlayers = state.players.map((p, idx) => {
         if (idx === playerIndex) {
           const inv = { ...p.inventory };
-          if (buff.type === 'SHIELD') inv.shields += 1;
-          if (buff.type === 'DOUBLE_POINTS') inv.doublePoints = true;
-          if (buff.type === 'BONUS_TIME') inv.bonusTime = true;
-          if (buff.type === 'DEFLECTION') inv.deflections += 1;
+          if (buff.type === "SHIELD") inv.shields += 1;
+          if (buff.type === "DOUBLE_POINTS") inv.doublePoints = true;
+          if (buff.type === "BONUS_TIME") inv.bonusTime = true;
+          if (buff.type === "DEFLECTION") inv.deflections += 1;
           return { ...p, inventory: inv };
         }
         return p;
@@ -391,15 +394,15 @@ export function gameReducer(state, action) {
       };
     }
 
-    case 'CONSUME_BUFF': {
+    case "CONSUME_BUFF": {
       const { playerIndex, buffType } = action.payload;
       const updatedPlayers = state.players.map((p, idx) => {
         if (idx === playerIndex) {
           const inv = { ...p.inventory };
-          if (buffType === 'SHIELD' && inv.shields > 0) inv.shields -= 1;
-          if (buffType === 'DOUBLE_POINTS') inv.doublePoints = false;
-          if (buffType === 'BONUS_TIME') inv.bonusTime = false;
-          if (buffType === 'DEFLECTION' && inv.deflections > 0)
+          if (buffType === "SHIELD" && inv.shields > 0) inv.shields -= 1;
+          if (buffType === "DOUBLE_POINTS") inv.doublePoints = false;
+          if (buffType === "BONUS_TIME") inv.bonusTime = false;
+          if (buffType === "DEFLECTION" && inv.deflections > 0)
             inv.deflections -= 1;
           return { ...p, inventory: inv };
         }
@@ -412,7 +415,7 @@ export function gameReducer(state, action) {
       };
     }
 
-    case 'SET_DEBUFF': {
+    case "SET_DEBUFF": {
       const { playerIndex, debuffType, value } = action.payload;
       const updatedPlayers = state.players.map((p, idx) => {
         if (idx === playerIndex) {
@@ -433,70 +436,41 @@ export function gameReducer(state, action) {
       };
     }
 
-    case 'NEXT_TURN': {
+    case "NEXT_TURN": {
       let updatedPlayers = [...state.players];
-      let nextIdx = (state.activePlayerIndex + 1) % state.players.length;
-      let loopCheck = 0;
       let logAdditions = [];
 
-      // Check if all players completed laps
-      if (isGameOver(updatedPlayers, state.targetLaps)) {
+      // Check for unfreezing during search
+      for (let i = 0; i < updatedPlayers.length; i++) {
+        const checkIdx =
+          (state.activePlayerIndex + 1 + i) % updatedPlayers.length;
+        const candidate = updatedPlayers[checkIdx];
+        if (
+          !candidate.hasFinished &&
+          candidate.lap < state.targetLaps &&
+          candidate.debuffs?.isFrozen
+        ) {
+          logAdditions.push(
+            `❄️ تم تخطي دور ${candidate.name} بسبب تأثير التجميد.`,
+          );
+        }
+      }
+
+      const nextIdx = getNextActivePlayerIndex(
+        updatedPlayers,
+        state.activePlayerIndex,
+        state.targetLaps,
+      );
+
+      // Check if all players completed laps or no valid player found
+      if (nextIdx === -1 || isGameOver(updatedPlayers, state.targetLaps)) {
         return {
           ...state,
           players: updatedPlayers,
-          screen: 'VICTORY',
+          screen: "VICTORY",
           activeModal: null,
           turnLog: [
-            '🏆 اكتملت جميع الدورات لجميع اللاعبين! مرحباً بكم في منصة التتويج.',
-            ...state.turnLog,
-          ],
-        };
-      }
-
-      // Loop to find next eligible player who is NOT finished and NOT frozen
-      while (loopCheck < state.players.length) {
-        const candidate = updatedPlayers[nextIdx];
-        const isFinished = candidate.lap >= state.targetLaps || candidate.hasFinished;
-
-        if (isFinished) {
-          nextIdx = (nextIdx + 1) % state.players.length;
-          loopCheck++;
-          continue;
-        }
-
-        // Check if candidate is frozen
-        if (candidate.debuffs.isFrozen) {
-          logAdditions.push(`❄️ تم تخطي دور ${candidate.name} بسبب تأثير التجميد.`);
-          // Unfreeze for the next round
-          updatedPlayers = updatedPlayers.map((p, idx) => {
-            if (idx === nextIdx) {
-              return {
-                ...p,
-                debuffs: { ...p.debuffs, isFrozen: false },
-              };
-            }
-            return p;
-          });
-
-          // Continue looking
-          nextIdx = (nextIdx + 1) % state.players.length;
-          loopCheck++;
-          continue;
-        }
-
-        // Found an eligible active player!
-        break;
-      }
-
-      // Check again if everyone ended up finished
-      if (isGameOver(updatedPlayers, state.targetLaps)) {
-        return {
-          ...state,
-          players: updatedPlayers,
-          screen: 'VICTORY',
-          activeModal: null,
-          turnLog: [
-            '🏆 اكتملت جميع الدورات لجميع اللاعبين! مرحباً بكم في منصة التتويج.',
+            "🏆 اكتملت جميع الدورات! مرحباً بكم في منصة التتويج.",
             ...state.turnLog,
           ],
         };
@@ -512,22 +486,22 @@ export function gameReducer(state, action) {
         turnLog: [...logAdditions, ...state.turnLog],
         notification: {
           text: `دور اللاعب: ${nextPlayer.name}`,
-          type: 'info',
+          type: "info",
         },
       };
     }
 
-    case 'SET_NOTIFICATION': {
+    case "SET_NOTIFICATION": {
       return {
         ...state,
         notification: action.payload,
       };
     }
 
-    case 'RESET_GAME': {
+    case "RESET_GAME": {
       return {
         ...initialGameState,
-        screen: 'SETUP',
+        screen: "SETUP",
       };
     }
 

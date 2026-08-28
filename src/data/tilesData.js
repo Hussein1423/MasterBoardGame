@@ -37,6 +37,8 @@ export const ZONES = {
   },
 };
 
+export const ZONES_LIST = Object.values(ZONES);
+
 export const TILE_TYPES = {
   QUIZ: {
     type: "QUIZ",

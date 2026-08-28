@@ -21,7 +21,7 @@ import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import FlagIcon from "@mui/icons-material/Flag";
 import StarIcon from "@mui/icons-material/Star";
 import { AVATARS } from "../../data/questionsData";
-import { ZONES } from "../../data/tilesData";
+import { ZONES, ZONES_LIST } from "../../data/tilesData";
 import { useGame } from "../../context/GameContext";
 
 export default function SetupScreen() {
@@ -39,12 +39,6 @@ export default function SetupScreen() {
       avatarId: "luffy",
       symbol: AVATARS[1].symbol,
       color: AVATARS[1].color,
-    },
-    {
-      name: "إيرين",
-      avatarId: "eren",
-      symbol: AVATARS[2].symbol,
-      color: AVATARS[2].color,
     },
   ]);
 
@@ -91,22 +85,22 @@ export default function SetupScreen() {
               mb: 1,
             }}
           >
-            ⚔️ لعبة خارطة طريق الأنمي ⚔️
+            ⚔️ لعبة خارطة طريق الأنمي (1v1) ⚔️
           </Typography>
           <Typography
             variant="h6"
             sx={{ color: "text.secondary", fontWeight: 600 }}
           >
-            سباق المعرفة والتحدي بين 3 أبطال عبر عوالم كونوها، جزيرة الحلوى،
+            مواجهة مباشرة وتحدي حماسي بين بطلين عبر عوالم كونوها، جزيرة الحلوى،
             وأسوار باراديس!
           </Typography>
         </Box>
       </motion.div>
 
-      <Grid container spacing={3}>
-        {/* Players Configuration */}
+      <Grid container spacing={4} sx={{ mb: 4 }}>
+        {/* Players Configuration (2 Players 1v1 Split) */}
         {players.map((player, idx) => (
-          <Grid item xs={12} md={4} key={idx}>
+          <Grid item xs={12} md={6} key={idx}>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -121,30 +115,31 @@ export default function SetupScreen() {
                   height: "100%",
                 }}
               >
-                <CardContent sx={{ p: 3 }}>
+                <CardContent sx={{ p: 3.5 }}>
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      mb: 2,
+                      mb: 2.5,
                     }}
                   >
                     <Chip
-                      label={`اللاعب ${idx + 1}`}
+                      label={`اللاعب ${idx + 1} ${idx === 0 ? "🔴" : "🔵"}`}
                       sx={{
                         backgroundColor: player.color,
                         color: "#FFFFFF",
                         fontWeight: 900,
-                        fontSize: "0.9rem",
+                        fontSize: "0.95rem",
+                        px: 1,
                       }}
                     />
                     <Avatar
                       sx={{
                         bgcolor: player.color,
-                        width: 52,
-                        height: 52,
-                        fontSize: "1.8rem",
+                        width: 58,
+                        height: 58,
+                        fontSize: "2rem",
                         boxShadow: `0 0 16px ${player.color}`,
                       }}
                     >
@@ -152,276 +147,256 @@ export default function SetupScreen() {
                     </Avatar>
                   </Box>
 
+                  {/* Player Name Input */}
                   <TextField
                     fullWidth
-                    label="اسم اللاعب"
+                    label={`اسم اللاعب ${idx + 1}`}
                     variant="outlined"
                     value={player.name}
                     onChange={(e) => handleNameChange(idx, e.target.value)}
-                    sx={{ mb: 2.5 }}
-                    size="small"
+                    sx={{ mb: 3 }}
+                    InputProps={{
+                      sx: { borderRadius: 3, fontWeight: 700 },
+                    }}
                   />
 
+                  {/* Avatar Selector */}
                   <Typography
                     variant="subtitle2"
-                    sx={{ mb: 1, color: "text.secondary" }}
+                    sx={{ fontWeight: 800, mb: 1.5, color: "text.secondary" }}
                   >
-                    اختر شخصية / رمز البطل:
+                    اختر البطل المفضل:
                   </Typography>
+                  <Grid container spacing={1.2}>
+                    {AVATARS.map((avatar) => {
+                      const isSelected = player.avatarId === avatar.id;
+                      const isTakenByOther = players.some(
+                        (p, pIdx) => pIdx !== idx && p.avatarId === avatar.id,
+                      );
 
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(4, 1fr)",
-                      gap: 1,
-                    }}
-                  >
-                    {AVATARS.map((av) => {
-                      const isSelected = player.avatarId === av.id;
                       return (
-                        <Tooltip
-                          key={av.id}
-                          title={`${av.name} (${av.anime})`}
-                          arrow
-                        >
-                          <Paper
-                            onClick={() => handleAvatarSelect(idx, av)}
-                            sx={{
-                              p: 1,
-                              textAlign: "center",
-                              cursor: "pointer",
-                              border: isSelected
-                                ? `2px solid ${av.color}`
-                                : "1px solid rgba(255,255,255,0.08)",
-                              backgroundColor: isSelected
-                                ? `${av.color}22`
-                                : "rgba(255,255,255,0.03)",
-                              borderRadius: 2,
-                              transition: "all 0.2s ease",
-                              "&:hover": {
-                                transform: "scale(1.1)",
-                                borderColor: av.color,
-                              },
-                            }}
+                        <Grid item xs={3} key={avatar.id}>
+                          <Tooltip
+                            title={`${avatar.name} (${avatar.anime}) - "${avatar.tagline}"`}
+                            arrow
                           >
-                            <Typography
-                              sx={{ fontSize: "1.5rem", lineHeight: 1 }}
-                            >
-                              {av.symbol}
-                            </Typography>
-                          </Paper>
-                        </Tooltip>
+                            <span>
+                              <Paper
+                                onClick={() =>
+                                  !isTakenByOther &&
+                                  handleAvatarSelect(idx, avatar)
+                                }
+                                sx={{
+                                  p: 1.2,
+                                  textAlign: "center",
+                                  cursor: isTakenByOther
+                                    ? "not-allowed"
+                                    : "pointer",
+                                  borderRadius: 2.5,
+                                  backgroundColor: isSelected
+                                    ? `${avatar.color}33`
+                                    : "rgba(255, 255, 255, 0.03)",
+                                  border: isSelected
+                                    ? `2px solid ${avatar.color}`
+                                    : "1px solid rgba(255, 255, 255, 0.08)",
+                                  opacity: isTakenByOther ? 0.3 : 1,
+                                  boxShadow: isSelected
+                                    ? `0 0 12px ${avatar.color}`
+                                    : "none",
+                                  transition: "all 0.2s ease",
+                                  "&:hover": {
+                                    transform: isTakenByOther
+                                      ? "none"
+                                      : "scale(1.05)",
+                                    borderColor: avatar.color,
+                                  },
+                                }}
+                              >
+                                <Typography sx={{ fontSize: "1.8rem" }}>
+                                  {avatar.symbol}
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    display: "block",
+                                    fontWeight: 700,
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    fontSize: "0.75rem",
+                                  }}
+                                >
+                                  {avatar.name.split(" ")[0]}
+                                </Typography>
+                              </Paper>
+                            </span>
+                          </Tooltip>
+                        </Grid>
                       );
                     })}
-                  </Box>
+                  </Grid>
                 </CardContent>
               </Card>
             </motion.div>
           </Grid>
         ))}
+      </Grid>
 
-        {/* Laps Configuration & Map Preview */}
-        <Grid item xs={12}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.45 }}
-          >
+      {/* Target Laps Setting */}
+      <Paper
+        sx={{
+          p: 3,
+          mb: 4,
+          borderRadius: 4,
+          background: "rgba(15, 23, 42, 0.8)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          textAlign: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
+            mb: 2,
+          }}
+        >
+          <FlagIcon sx={{ color: "#00E5FF" }} />
+          <Typography variant="h6" sx={{ fontWeight: 800 }}>
+            عدد الدورات المطلوبة لإنهاء السباق:
+          </Typography>
+        </Box>
+
+        <RadioGroup
+          row
+          value={targetLaps}
+          onChange={(e) => setTargetLaps(Number(e.target.value))}
+          sx={{ justifyContent: "center", gap: 3 }}
+        >
+          {[1, 2, 3].map((lap) => (
             <Paper
+              key={lap}
               sx={{
-                p: 3,
-                borderRadius: 4,
-                background: "rgba(15, 23, 42, 0.85)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
+                px: 3,
+                py: 1,
+                borderRadius: 3,
+                backgroundColor:
+                  targetLaps === lap
+                    ? "rgba(0, 229, 255, 0.15)"
+                    : "rgba(255, 255, 255, 0.03)",
+                border:
+                  targetLaps === lap
+                    ? "2px solid #00E5FF"
+                    : "1px solid rgba(255, 255, 255, 0.08)",
               }}
             >
-              <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12} md={5}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 800,
-                      mb: 1.5,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <FlagIcon sx={{ color: "primary.main" }} /> طول السباق (عدد
-                    الدورات):
+              <FormControlLabel
+                value={lap}
+                control={<Radio sx={{ color: "#00E5FF" }} />}
+                label={
+                  <Typography sx={{ fontWeight: 800 }}>
+                    {lap}{" "}
+                    {lap === 1
+                      ? "دورة (مباراة سريعة)"
+                      : lap === 2
+                        ? "دورتان (متوسطة)"
+                        : "3 دورات (ماراثون)"}
                   </Typography>
-
-                  <RadioGroup
-                    row
-                    value={targetLaps}
-                    onChange={(e) => setTargetLaps(parseInt(e.target.value))}
-                    sx={{ gap: 2 }}
-                  >
-                    {[1, 2, 3].map((lap) => (
-                      <Paper
-                        key={lap}
-                        sx={{
-                          p: 1.5,
-                          px: 2.5,
-                          borderRadius: 3,
-                          cursor: "pointer",
-                          border:
-                            targetLaps === lap
-                              ? "2px solid #FF7A00"
-                              : "1px solid rgba(255,255,255,0.1)",
-                          backgroundColor:
-                            targetLaps === lap
-                              ? "rgba(255, 122, 0, 0.15)"
-                              : "transparent",
-                        }}
-                        onClick={() => setTargetLaps(lap)}
-                      >
-                        <FormControlLabel
-                          value={lap}
-                          control={
-                            <Radio
-                              sx={{
-                                color: "#FF7A00",
-                                "&.Mui-checked": { color: "#FF7A00" },
-                              }}
-                            />
-                          }
-                          label={
-                            <Typography sx={{ fontWeight: 800 }}>
-                              {lap === 1
-                                ? "دورة واحدة (سريع ⚡)"
-                                : lap === 2
-                                  ? "دورتان (متوازن ⚔️)"
-                                  : "3 دورات (ملحمي 🏆)"}
-                            </Typography>
-                          }
-                          sx={{ m: 0 }}
-                        />
-                      </Paper>
-                    ))}
-                  </RadioGroup>
-                </Grid>
-
-                <Grid item xs={12} md={7}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ color: "text.secondary", mb: 1 }}
-                  >
-                    خارطة العوالم الثلاثة (30 خانة):
-                  </Typography>
-                  <Grid container spacing={1.5}>
-                    <Grid item xs={4}>
-                      <Paper
-                        sx={{
-                          p: 1.5,
-                          borderRadius: 2,
-                          border: `1px solid ${ZONES.KONOHA.color}`,
-                          background: ZONES.KONOHA.bgGradient,
-                          textAlign: "center",
-                        }}
-                      >
-                        <Typography variant="h6">
-                          {ZONES.KONOHA.icon}
-                        </Typography>
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ fontWeight: 800, color: ZONES.KONOHA.color }}
-                        >
-                          {ZONES.KONOHA.name}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          sx={{ color: "text.secondary" }}
-                        >
-                          الخانات 1 - 10
-                        </Typography>
-                      </Paper>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <Paper
-                        sx={{
-                          p: 1.5,
-                          borderRadius: 2,
-                          border: `1px solid ${ZONES.WHOLE_CAKE.color}`,
-                          background: ZONES.WHOLE_CAKE.bgGradient,
-                          textAlign: "center",
-                        }}
-                      >
-                        <Typography variant="h6">
-                          {ZONES.WHOLE_CAKE.icon}
-                        </Typography>
-                        <Typography
-                          variant="subtitle2"
-                          sx={{
-                            fontWeight: 800,
-                            color: ZONES.WHOLE_CAKE.color,
-                          }}
-                        >
-                          {ZONES.WHOLE_CAKE.name}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          sx={{ color: "text.secondary" }}
-                        >
-                          الخانات 11 - 20
-                        </Typography>
-                      </Paper>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <Paper
-                        sx={{
-                          p: 1.5,
-                          borderRadius: 2,
-                          border: `1px solid ${ZONES.PARADIS.color}`,
-                          background: ZONES.PARADIS.bgGradient,
-                          textAlign: "center",
-                        }}
-                      >
-                        <Typography variant="h6">
-                          {ZONES.PARADIS.icon}
-                        </Typography>
-                        <Typography
-                          variant="subtitle2"
-                          sx={{ fontWeight: 800, color: ZONES.PARADIS.color }}
-                        >
-                          {ZONES.PARADIS.name}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          sx={{ color: "text.secondary" }}
-                        >
-                          الخانات 21 - 30
-                        </Typography>
-                      </Paper>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Box sx={{ textAlign: "center", mt: 4 }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  onClick={handleStart}
-                  startIcon={<SportsEsportsIcon sx={{ fontSize: 28 }} />}
-                  sx={{
-                    px: 6,
-                    py: 1.8,
-                    fontSize: "1.25rem",
-                    fontWeight: 900,
-                    borderRadius: 4,
-                  }}
-                >
-                  🚀 انطلاق اللعبة والسباق!
-                </Button>
-              </Box>
+                }
+              />
             </Paper>
-          </motion.div>
+          ))}
+        </RadioGroup>
+      </Paper>
+
+      {/* Anime Zones Overview */}
+      <Paper
+        sx={{
+          p: 3,
+          mb: 4,
+          borderRadius: 4,
+          background: "rgba(15, 23, 42, 0.8)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 900, mb: 2, textAlign: "center" }}
+        >
+          🗺️ عوالم الخارطة الثلاثة
+        </Typography>
+        <Grid container spacing={2}>
+          {(Array.isArray(ZONES_LIST)
+            ? ZONES_LIST
+            : Object.values(ZONES || {})
+          ).map((zone) => (
+            <Grid item xs={12} md={4} key={zone.id}>
+              <Paper
+                sx={{
+                  p: 2,
+                  borderRadius: 3,
+                  background: zone.bgGradient || "rgba(255, 255, 255, 0.05)",
+                  border: `1.5px solid ${zone.borderColor || zone.color || "#00E5FF"}`,
+                  height: "100%",
+                }}
+              >
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                >
+                  <Typography sx={{ fontSize: "1.5rem" }}>
+                    {zone.icon}
+                  </Typography>
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ fontWeight: 800, color: zone.color || "#FFFFFF" }}
+                    >
+                      {zone.name}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "text.secondary", fontWeight: 700 }}
+                    >
+                      {zone.anime}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "text.secondary", fontSize: "0.85rem" }}
+                >
+                  {zone.subtext}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
-      </Grid>
+      </Paper>
+
+      {/* Start Match Button */}
+      <Box sx={{ textAlign: "center" }}>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={handleStart}
+            startIcon={<SportsEsportsIcon sx={{ fontSize: 32 }} />}
+            sx={{
+              px: 8,
+              py: 2,
+              fontSize: "1.3rem",
+              fontWeight: 900,
+              borderRadius: 4,
+              background: "linear-gradient(90deg, #FF7A00 0%, #FF4081 100%)",
+              boxShadow: "0 0 30px rgba(255, 122, 0, 0.5)",
+              border: "2px solid #FFFFFF",
+            }}
+          >
+            بدء المواجهة (1v1 Start Game)
+          </Button>
+        </motion.div>
+      </Box>
     </Container>
   );
 }

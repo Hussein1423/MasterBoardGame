@@ -214,16 +214,6 @@ export function GameProvider({ children }) {
 
       if (buff.type === 'ADVANCE') {
         advanceStepsDirectly(buff.tiles);
-      } else if (buff.type === 'DIRECT_POINTS') {
-        dispatch({
-          type: 'ADD_POINTS',
-          payload: {
-            playerIndex: state.activePlayerIndex,
-            points: buff.points,
-            reason: buff.name,
-          },
-        });
-        dispatch({ type: 'NEXT_TURN' });
       } else {
         dispatch({
           type: 'APPLY_BUFF',
@@ -304,6 +294,9 @@ export function GameProvider({ children }) {
 
   const deflectQuestion = useCallback(
     (targetPlayerIdx) => {
+      const targetPlayer = state.players[targetPlayerIdx];
+
+      // Always consume Player A's deflection card
       dispatch({
         type: 'CONSUME_BUFF',
         payload: {
@@ -311,8 +304,32 @@ export function GameProvider({ children }) {
           buffType: 'DEFLECTION',
         },
       });
+
+      // Check if target player has a shield
+      if (targetPlayer?.inventory?.shields > 0) {
+        soundEffects.playShieldBlock();
+        // Consume 1 shield from target player
+        dispatch({
+          type: 'CONSUME_BUFF',
+          payload: {
+            playerIndex: targetPlayerIdx,
+            buffType: 'SHIELD',
+          },
+        });
+        // Prominent toast notification
+        dispatch({
+          type: 'SET_NOTIFICATION',
+          payload: {
+            text: `🛡️ تم استخدام درع الحماية لصد تحويل السؤال! (${targetPlayer.name})`,
+            type: 'warning',
+          },
+        });
+        return { blockedByShield: true, targetName: targetPlayer.name };
+      }
+
+      return { blockedByShield: false, targetName: targetPlayer?.name };
     },
-    [state.activePlayerIndex]
+    [state.players, state.activePlayerIndex]
   );
 
   const resetGame = useCallback(() => {
