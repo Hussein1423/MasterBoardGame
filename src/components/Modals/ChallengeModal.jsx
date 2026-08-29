@@ -15,6 +15,7 @@ import FlashOnIcon from '@mui/icons-material/FlashOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import GavelIcon from '@mui/icons-material/Gavel';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import TimerProgress from '../Common/TimerProgress';
 import { useGame } from '../../context/GameContext';
 
@@ -28,6 +29,7 @@ export default function ChallengeModal({ open, tile }) {
 
   const [isAnswered, setIsAnswered] = useState(false);
   const [isTimesUp, setIsTimesUp] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(false);
 
   if (!open || !challenge) {
     return null;
@@ -87,7 +89,7 @@ export default function ChallengeModal({ open, tile }) {
                 ⚡ تحدي السرعة الفوري ({challenge.title})
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                الخانة: {tile?.title || ''}
+                {challenge.anime ? `أنمي: ${challenge.anime} • ` : ''}الخانة: {tile?.title || ''}
               </Typography>
             </Box>
           </Box>
@@ -140,7 +142,7 @@ export default function ChallengeModal({ open, tile }) {
           </Paper>
 
           <TimerProgress
-            durationSeconds={30}
+            durationSeconds={challenge.timeLimit || 30}
             onTimeUp={handleTimeUp}
             isActive={!isAnswered && !isTimesUp}
           />
@@ -171,6 +173,56 @@ export default function ChallengeModal({ open, tile }) {
             {challenge.prompt}
           </Typography>
         </Paper>
+
+        {/* Reveal Model Answer Button & Box */}
+        {!isRevealed ? (
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => setIsRevealed(true)}
+              startIcon={<VisibilityIcon />}
+              sx={{
+                px: 3.5,
+                py: 1.2,
+                fontWeight: 900,
+                borderRadius: 3,
+                fontSize: '0.95rem',
+                borderColor: 'rgba(0, 229, 255, 0.5)',
+                color: '#00E5FF',
+                '&:hover': {
+                  borderColor: '#00E5FF',
+                  backgroundColor: 'rgba(0, 229, 255, 0.1)',
+                  boxShadow: '0 0 15px rgba(0, 229, 255, 0.3)',
+                },
+              }}
+            >
+              إظهار الإجابة النموذجية للحكم 🔍
+            </Button>
+          </Box>
+        ) : (
+          <Paper
+            sx={{
+              p: 2.5,
+              mb: 3,
+              borderRadius: 3,
+              backgroundColor: 'rgba(0, 229, 255, 0.12)',
+              border: '2px solid #00E5FF',
+              boxShadow: '0 0 25px rgba(0, 229, 255, 0.25)',
+              textAlign: 'right',
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: 900, color: '#00E5FF', mb: 0.8 }}
+            >
+              💡 الإجابة النموذجية المقترحة:
+            </Typography>
+            <Typography variant="body1" sx={{ fontWeight: 800, color: '#FFFFFF', lineHeight: 1.6 }}>
+              {challenge.answer || challenge.sampleAnswer || 'راجع القواعد الخاصة بالتحدي'}
+            </Typography>
+          </Paper>
+        )}
 
         {/* Single Referee Decision Controls */}
         <Paper
