@@ -467,14 +467,14 @@ export const LUCKY_BUFFS = [
     type: "FREE_HINT",
     icon: "👁️",
   },
-  {
-    id: "buff-reroll",
-    name: "لفافة إعادة التدوير (Reroll)",
-    description:
-      "تمنحك حق إعادة تدوير النرد فوراً إذا لم تعجبك النتيجة الأولى قبل التحرك!",
-    type: "REROLL",
-    icon: "🎲",
-  },
+  // {
+  //   id: "buff-reroll",
+  //   name: "لفافة إعادة التدوير (Reroll)",
+  //   description:
+  //     "تمنحك حق إعادة تدوير النرد فوراً إذا لم تعجبك النتيجة الأولى قبل التحرك!",
+  //   type: "REROLL",
+  //   icon: "🎲",
+  // },
 ];
 
 // ==========================================
@@ -528,15 +528,15 @@ export const TRAP_PENALTIES = [
     type: "HIGH_DICE",
     icon: "🎯",
   },
-  {
-    id: "trap-silent-advance",
-    name: "خطوات شبحية (+2 بدون تفعيل)",
-    description:
-      "تتقدم خطوتين للأمام فوراً ولكن دون تفعيل تأثير الخانة التي تقف عليها!",
-    type: "SILENT_ADVANCE",
-    tiles: 2,
-    icon: "👻",
-  },
+  // {
+  //   id: "trap-silent-advance",
+  //   name: "خطوات شبحية (+2 بدون تفعيل)",
+  //   description:
+  //     "تتقدم خطوتين للأمام فوراً ولكن دون تفعيل تأثير الخانة التي تقف عليها!",
+  //   type: "SILENT_ADVANCE",
+  //   tiles: 2,
+  //   icon: "👻",
+  // },
 ];
 
 // ==========================================

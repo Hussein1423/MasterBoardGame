@@ -142,7 +142,10 @@ export default function QuestionModal({ open, tile }) {
               reason: `مكافأة نجاح تحويل السؤال (+${halfPoints} نقطة)`,
             },
           });
-          dispatch({ type: "NEXT_TURN" });
+          dispatch({ type: "CLOSE_MODAL" });
+          setTimeout(() => {
+            dispatch({ type: "NEXT_TURN" });
+          }, 900);
         } else {
           // If targeted opponent FAILS:
           // Target opponent loses HALF points (-0.5 * pts); Player who used deflection card gets 0 points
@@ -156,7 +159,10 @@ export default function QuestionModal({ open, tile }) {
               reason: `إخفاق في إجابة سؤال محوّل (-${penaltyPoints})`,
             },
           });
-          dispatch({ type: "NEXT_TURN" });
+          dispatch({ type: "CLOSE_MODAL" });
+          setTimeout(() => {
+            dispatch({ type: "NEXT_TURN" });
+          }, 900);
         }
       } else {
         if (hasFreeHint && hintsUsedCount > 0) {
@@ -194,7 +200,10 @@ export default function QuestionModal({ open, tile }) {
               reason: `مكافأة نجاح تحويل السؤال (+${halfPoints} نقطة)`,
             },
           });
-          dispatch({ type: "NEXT_TURN" });
+          dispatch({ type: "CLOSE_MODAL" });
+          setTimeout(() => {
+            dispatch({ type: "NEXT_TURN" });
+          }, 900);
         } else {
           // If targeted opponent FAILS:
           // Target opponent loses HALF points (-0.5 * pts); Player who used deflection card gets 0 points
@@ -208,7 +217,10 @@ export default function QuestionModal({ open, tile }) {
               reason: `إخفاق في إجابة سؤال محوّل (-${penaltyPoints})`,
             },
           });
-          dispatch({ type: "NEXT_TURN" });
+          dispatch({ type: "CLOSE_MODAL" });
+          setTimeout(() => {
+            dispatch({ type: "NEXT_TURN" });
+          }, 900);
         }
       } else {
         if (hasFreeHint && hintsUsedCount > 0) {
@@ -271,7 +283,10 @@ export default function QuestionModal({ open, tile }) {
             reason: `انتهاء الوقت لسؤال محوّل (-${penaltyPoints})`,
           },
         });
-        dispatch({ type: "NEXT_TURN" });
+        dispatch({ type: "CLOSE_MODAL" });
+        setTimeout(() => {
+          dispatch({ type: "NEXT_TURN" });
+        }, 900);
       } else {
         resolveQuiz(0, false, "انتهى الوقت المحدد للسؤال");
       }

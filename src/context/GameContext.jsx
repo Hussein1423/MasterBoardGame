@@ -263,7 +263,13 @@ export function GameProvider({ children }) {
         });
       }
 
-      dispatch({ type: "NEXT_TURN" });
+      // Close modal first so player sees their score and board
+      dispatch({ type: "CLOSE_MODAL" });
+
+      // Check for turn progression or victory after a smooth 900ms delay
+      setTimeout(() => {
+        dispatch({ type: "NEXT_TURN" });
+      }, 900);
     },
     [state.players, state.activePlayerIndex],
   );
@@ -296,7 +302,10 @@ export function GameProvider({ children }) {
         });
       }
 
-      dispatch({ type: "NEXT_TURN" });
+      dispatch({ type: "CLOSE_MODAL" });
+      setTimeout(() => {
+        dispatch({ type: "NEXT_TURN" });
+      }, 900);
     },
     [state.players, state.activePlayerIndex],
   );
