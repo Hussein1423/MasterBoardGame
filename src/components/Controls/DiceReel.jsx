@@ -4,10 +4,11 @@ import { motion } from "framer-motion";
 import CasinoIcon from "@mui/icons-material/Casino";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { useGame } from "../../context/GameContext";
 
 export default function DiceReel() {
-  const { state, dispatch, rollDice } = useGame();
+  const { state, dispatch, rollDice, rerollDice } = useGame();
   const {
     isRolling,
     isMoving,
@@ -26,13 +27,18 @@ export default function DiceReel() {
     let interval;
     if (isRolling) {
       interval = setInterval(() => {
-        setDisplayNumber(Math.floor(Math.random() * 6) + 1);
+        if (activePlayer?.inventory?.highDice) {
+          const highNumbers = [4, 5, 6];
+          setDisplayNumber(highNumbers[Math.floor(Math.random() * highNumbers.length)]);
+        } else {
+          setDisplayNumber(Math.floor(Math.random() * 6) + 1);
+        }
       }, 70);
     } else if (lastRollValue) {
       setDisplayNumber(lastRollValue);
     }
     return () => clearInterval(interval);
-  }, [isRolling, lastRollValue]);
+  }, [isRolling, lastRollValue, activePlayer?.inventory?.highDice]);
 
   const isDisabled =
     isRolling || isMoving || !!activeModal || activePlayer.hasFinished;
@@ -65,7 +71,7 @@ export default function DiceReel() {
         overflow: "hidden",
       }}
     >
-      {/* Active Player Banner */}
+      {/* Active Player Banner & Tactical Indicators */}
       <Box
         sx={{
           display: "flex",
@@ -73,6 +79,7 @@ export default function DiceReel() {
           justifyContent: "center",
           gap: 1.5,
           mb: 2,
+          flexWrap: "wrap",
         }}
       >
         <Chip
@@ -92,6 +99,22 @@ export default function DiceReel() {
             </Typography>
           }
         />
+
+        {activePlayer.inventory?.highDice && (
+          <Chip
+            label="🎯 نرد الأرقام العليا مفعل [4 - 6]"
+            size="small"
+            sx={{
+              backgroundColor: "rgba(0, 229, 255, 0.2)",
+              color: "#00E5FF",
+              border: "1.5px solid #00E5FF",
+              fontWeight: 900,
+              fontSize: "0.85rem",
+              py: 1.5,
+              animation: "pulse 1.5s infinite",
+            }}
+          />
+        )}
       </Box>
 
       {/* Digital Dice Reel Box */}
@@ -153,7 +176,7 @@ export default function DiceReel() {
         </motion.div>
       </Box>
 
-      {/* Action Buttons: Roll Dice & Referee Skip Turn */}
+      {/* Action Buttons: Roll Dice, Reroll & Referee Skip Turn */}
       <Box
         sx={{
           mb: 2,
@@ -200,6 +223,33 @@ export default function DiceReel() {
               ? "الرمز يتحرك في الخارطة... 🏃"
               : "تحريك / Roll 🎲"}
         </Button>
+
+        {/* Tactical Reroll Button */}
+        {activePlayer.inventory?.rerolls > 0 && !isDisabled && (
+          <Button
+            variant="contained"
+            size="large"
+            onClick={rerollDice}
+            disabled={isRolling || isMoving}
+            startIcon={<AutorenewIcon sx={{ fontSize: 26 }} />}
+            sx={{
+              px: 3.5,
+              py: 1.6,
+              fontSize: "1.05rem",
+              fontWeight: 900,
+              borderRadius: 3.5,
+              background: "linear-gradient(135deg, #7C4DFF 0%, #E040FB 100%)",
+              boxShadow: "0 4px 20px rgba(124, 77, 255, 0.4)",
+              color: "#FFFFFF",
+              "&:hover": {
+                background: "linear-gradient(135deg, #651FFF 0%, #D500F9 100%)",
+                boxShadow: "0 6px 25px rgba(224, 64, 251, 0.6)",
+              },
+            }}
+          >
+            إعادة التدوير ({activePlayer.inventory.rerolls}×) 🔄
+          </Button>
+        )}
 
         {/* Referee Turn Skip Button */}
         <Button

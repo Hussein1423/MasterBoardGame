@@ -24,10 +24,15 @@ export const initialGameState = {
         doublePoints: false,
         bonusTime: false,
         deflections: 0,
+        freeHints: 0,
+        rerolls: 0,
+        highDice: false,
       },
       debuffs: {
         isFrozen: false,
         halfTime: false,
+        timeDrain: 0,
+        skipNextQuestion: false,
       },
       hasFinished: false,
     },
@@ -45,10 +50,15 @@ export const initialGameState = {
         doublePoints: false,
         bonusTime: false,
         deflections: 0,
+        freeHints: 0,
+        rerolls: 0,
+        highDice: false,
       },
       debuffs: {
         isFrozen: false,
         halfTime: false,
+        timeDrain: 0,
+        skipNextQuestion: false,
       },
       hasFinished: false,
     },
@@ -85,10 +95,15 @@ export function gameReducer(state, action) {
             doublePoints: false,
             bonusTime: false,
             deflections: 0,
+            freeHints: 0,
+            rerolls: 0,
+            highDice: false,
           },
           debuffs: {
             isFrozen: false,
             halfTime: false,
+            timeDrain: 0,
+            skipNextQuestion: false,
           },
           hasFinished: false,
         })),
@@ -247,6 +262,56 @@ export function gameReducer(state, action) {
         };
       }
 
+      // Check if player has skipNextQuestion debuff (ضباب النسيان)
+      if (
+        activePlayer.debuffs?.skipNextQuestion &&
+        (tileData.type.type === "QUIZ" || tileData.type.type === "CHALLENGE")
+      ) {
+        let updatedPlayers = state.players.map((p, idx) =>
+          idx === state.activePlayerIndex
+            ? { ...p, debuffs: { ...p.debuffs, skipNextQuestion: false } }
+            : p,
+        );
+
+        const nextIdx = getNextActivePlayerIndex(
+          updatedPlayers,
+          state.activePlayerIndex,
+          state.targetLaps,
+        );
+
+        if (nextIdx === -1 || isGameOver(updatedPlayers, state.targetLaps)) {
+          return {
+            ...state,
+            players: updatedPlayers,
+            isMoving: false,
+            screen: "VICTORY",
+            activeModal: null,
+            turnLog: [
+              "🏆 اكتملت جميع الدورات! مرحباً بكم في منصة التتويج.",
+              ...state.turnLog,
+            ],
+          };
+        }
+
+        const nextPlayer = updatedPlayers[nextIdx];
+
+        return {
+          ...state,
+          players: updatedPlayers,
+          isMoving: false,
+          activePlayerIndex: nextIdx,
+          activeModal: null,
+          turnLog: [
+            `🌫️ تأثير "ضباب النسيان" تخطى سؤال/تحدي الخانة ${tileData.number} تماماً!`,
+            ...state.turnLog,
+          ],
+          notification: {
+            text: `🌫️ تم تخطي السؤال بسبب ضباب النسيان! الدور الآن لـ ${nextPlayer.name}`,
+            type: "info",
+          },
+        };
+      }
+
       // Pre-draw non-repeating question if QUIZ tile
       if (tileData.type.type === "QUIZ") {
         const drawn = drawUniqueQuestion(state.usedQuestionIds);
@@ -379,6 +444,10 @@ export function gameReducer(state, action) {
           if (buff.type === "DOUBLE_POINTS") inv.doublePoints = true;
           if (buff.type === "BONUS_TIME") inv.bonusTime = true;
           if (buff.type === "DEFLECTION") inv.deflections += 1;
+          if (buff.type === "FREE_HINT")
+            inv.freeHints = (inv.freeHints || 0) + 1;
+          if (buff.type === "REROLL") inv.rerolls = (inv.rerolls || 0) + 1;
+          if (buff.type === "HIGH_DICE") inv.highDice = true;
           return { ...p, inventory: inv };
         }
         return p;
@@ -404,6 +473,9 @@ export function gameReducer(state, action) {
           if (buffType === "BONUS_TIME") inv.bonusTime = false;
           if (buffType === "DEFLECTION" && inv.deflections > 0)
             inv.deflections -= 1;
+          if (buffType === "FREE_HINT" && inv.freeHints > 0) inv.freeHints -= 1;
+          if (buffType === "REROLL" && inv.rerolls > 0) inv.rerolls -= 1;
+          if (buffType === "HIGH_DICE") inv.highDice = false;
           return { ...p, inventory: inv };
         }
         return p;
@@ -440,6 +512,25 @@ export function gameReducer(state, action) {
       let updatedPlayers = [...state.players];
       let logAdditions = [];
 
+      // Clean up transient turn modifiers for the player whose turn just ended
+      updatedPlayers = updatedPlayers.map((p, idx) => {
+        if (idx === state.activePlayerIndex) {
+          return {
+            ...p,
+            inventory: {
+              ...p.inventory,
+              highDice: false,
+            },
+            debuffs: {
+              ...p.debuffs,
+              timeDrain: 0,
+              halfTime: false,
+            },
+          };
+        }
+        return p;
+      });
+
       // Check for unfreezing during search
       for (let i = 0; i < updatedPlayers.length; i++) {
         const checkIdx =
@@ -467,6 +558,8 @@ export function gameReducer(state, action) {
         return {
           ...state,
           players: updatedPlayers,
+          isMoving: false,
+          isRolling: false,
           screen: "VICTORY",
           activeModal: null,
           turnLog: [
@@ -481,6 +574,8 @@ export function gameReducer(state, action) {
       return {
         ...state,
         players: updatedPlayers,
+        isMoving: false,
+        isRolling: false,
         activePlayerIndex: nextIdx,
         activeModal: null,
         turnLog: [...logAdditions, ...state.turnLog],

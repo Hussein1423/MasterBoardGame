@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -38,7 +38,15 @@ export default function EventModal({ open, tile, type }) {
   const [hasClaimed, setHasClaimed] = useState(false);
   const [shieldBlocked, setShieldBlocked] = useState(false);
 
+  useEffect(() => {
+    if (open) {
+      setHasClaimed(false);
+      setShieldBlocked(false);
+    }
+  }, [open]);
+
   const handleAction = () => {
+    if (hasClaimed) return;
     setHasClaimed(true);
     if (isLucky) {
       resolveLucky(eventItem);

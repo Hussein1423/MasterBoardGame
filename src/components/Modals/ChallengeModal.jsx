@@ -142,7 +142,11 @@ export default function ChallengeModal({ open, tile }) {
           </Paper>
 
           <TimerProgress
-            durationSeconds={challenge.timeLimit || 30}
+            durationSeconds={
+              activePlayer?.debuffs?.timeDrain
+                ? Math.max(10, (challenge.timeLimit || 30) - activePlayer.debuffs.timeDrain)
+                : challenge.timeLimit || 30
+            }
             onTimeUp={handleTimeUp}
             isActive={!isAnswered && !isTimesUp}
           />

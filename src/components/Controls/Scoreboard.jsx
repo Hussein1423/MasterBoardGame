@@ -446,6 +446,63 @@ export default function Scoreboard() {
                       </Tooltip>
                     )}
 
+                    {player.inventory.freeHints > 0 && (
+                      <Tooltip
+                        title={`عين البصيرة متوفرة (${player.inventory.freeHints}) - تلميح مجاني بدون خصم`}
+                        arrow
+                      >
+                        <Chip
+                          label={`عين البصيرة ×${player.inventory.freeHints} 👁️`}
+                          size="small"
+                          sx={{
+                            backgroundColor: "rgba(0, 229, 255, 0.15)",
+                            color: "#00E5FF",
+                            border: "1px solid rgba(0, 229, 255, 0.4)",
+                            fontWeight: 800,
+                            fontSize: "0.72rem",
+                          }}
+                        />
+                      </Tooltip>
+                    )}
+
+                    {player.inventory.rerolls > 0 && (
+                      <Tooltip
+                        title={`لفافة إعادة تدوير النرد متوفرة (${player.inventory.rerolls})`}
+                        arrow
+                      >
+                        <Chip
+                          label={`إعادة نرد ×${player.inventory.rerolls} 🎲`}
+                          size="small"
+                          sx={{
+                            backgroundColor: "rgba(224, 64, 251, 0.15)",
+                            color: "#E040FB",
+                            border: "1px solid rgba(224, 64, 251, 0.4)",
+                            fontWeight: 800,
+                            fontSize: "0.72rem",
+                          }}
+                        />
+                      </Tooltip>
+                    )}
+
+                    {player.inventory.highDice && (
+                      <Tooltip
+                        title="نرد الأرقام العليا مفعل (دورك القادم ينتج 4 - 6 فقط)"
+                        arrow
+                      >
+                        <Chip
+                          label="نرد 4-6 🎯"
+                          size="small"
+                          sx={{
+                            backgroundColor: "rgba(255, 215, 0, 0.2)",
+                            color: "#FFD700",
+                            border: "1px solid #FFD700",
+                            fontWeight: 800,
+                            fontSize: "0.72rem",
+                          }}
+                        />
+                      </Tooltip>
+                    )}
+
                     {player.debuffs.isFrozen && (
                       <Tooltip
                         title="اللاعب مجمد! سيتم تخطي دوره القادم"
@@ -493,6 +550,44 @@ export default function Scoreboard() {
                             backgroundColor: "rgba(255, 61, 0, 0.2)",
                             color: "#FF3D00",
                             border: "1px solid #FF3D00",
+                            fontWeight: 800,
+                            fontSize: "0.72rem",
+                          }}
+                        />
+                      </Tooltip>
+                    )}
+
+                    {player.debuffs.timeDrain > 0 && (
+                      <Tooltip
+                        title={`خصم ${player.debuffs.timeDrain} ثانية من السؤال أو التحدي القادم`}
+                        arrow
+                      >
+                        <Chip
+                          label={`استنزاف وقت -${player.debuffs.timeDrain}s ⏳`}
+                          size="small"
+                          sx={{
+                            backgroundColor: "rgba(255, 61, 0, 0.2)",
+                            color: "#FF3D00",
+                            border: "1px solid #FF3D00",
+                            fontWeight: 800,
+                            fontSize: "0.72rem",
+                          }}
+                        />
+                      </Tooltip>
+                    )}
+
+                    {player.debuffs.skipNextQuestion && (
+                      <Tooltip
+                        title="ضباب النسيان: سيتم تفويت السؤال القادم بدون نقاط وبدون تفعيل"
+                        arrow
+                      >
+                        <Chip
+                          label="تفويت السؤال 🌫️"
+                          size="small"
+                          sx={{
+                            backgroundColor: "rgba(148, 163, 184, 0.2)",
+                            color: "#94A3B8",
+                            border: "1px solid #94A3B8",
                             fontWeight: 800,
                             fontSize: "0.72rem",
                           }}
