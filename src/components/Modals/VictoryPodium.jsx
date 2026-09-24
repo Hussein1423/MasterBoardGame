@@ -12,8 +12,6 @@ import {
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import ReplayIcon from "@mui/icons-material/Replay";
-import SettingsIcon from "@mui/icons-material/Settings";
 import StarIcon from "@mui/icons-material/Star";
 import FlagIcon from "@mui/icons-material/Flag";
 import { useGame } from "../../context/GameContext";
@@ -96,7 +94,8 @@ export default function VictoryPodium() {
             variant="h6"
             sx={{ color: "text.secondary", fontWeight: 700 }}
           >
-            تهانينا للبطلين على خوض هذه المواجهة الملحمية وإكمال خارطة طريق الأنمي!
+            تهانينا للبطلين على خوض هذه المواجهة الملحمية وإكمال خارطة طريق
+            الأنمي!
           </Typography>
         </Box>
       </motion.div>
@@ -279,13 +278,19 @@ export default function VictoryPodium() {
                     <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
                       {player.name}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "text.secondary" }}
+                    >
                       أتم {player.lap} دورة
                     </Typography>
                   </Box>
                 </Box>
 
-                <Typography variant="h6" sx={{ fontWeight: 900, color: "#FFD700" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 900, color: "#FFD700" }}
+                >
                   {player.score} نقطة
                 </Typography>
               </Paper>
@@ -295,12 +300,18 @@ export default function VictoryPodium() {
       </Paper>
 
       {/* Action Buttons */}
-      <Box sx={{ display: "flex", justifyContent: "center", gap: 3, flexWrap: "wrap" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 3,
+          flexWrap: "wrap",
+        }}
+      >
         <Button
           variant="contained"
           size="large"
           onClick={handlePlayAgain}
-          startIcon={<ReplayIcon />}
           sx={{
             px: 5,
             py: 1.8,
@@ -318,7 +329,6 @@ export default function VictoryPodium() {
           variant="outlined"
           size="large"
           onClick={resetGame}
-          startIcon={<SettingsIcon />}
           sx={{
             px: 5,
             py: 1.8,
