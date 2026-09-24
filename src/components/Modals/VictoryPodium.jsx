@@ -25,11 +25,12 @@ export default function VictoryPodium() {
   const rankings = getRankings(players);
   const first = rankings[0];
   const second = rankings[1];
+  const third = rankings[2];
 
   useEffect(() => {
     soundEffects.playFanfare();
 
-    // Trigger celebratory confetti fireworks for 1v1 finale
+    // Trigger celebratory confetti fireworks
     const duration = 4 * 1000;
     const end = Date.now() + duration;
 
@@ -88,19 +89,18 @@ export default function VictoryPodium() {
               mb: 1,
             }}
           >
-            🏆 حفل التتويج والنصر (1v1) 🏆
+            🏆 حفل التتويج والنصر 🏆
           </Typography>
           <Typography
             variant="h6"
             sx={{ color: "text.secondary", fontWeight: 700 }}
           >
-            تهانينا للبطلين على خوض هذه المواجهة الملحمية وإكمال خارطة طريق
-            الأنمي!
+            تهانينا للأبطال على خوض هذه المواجهة الملحمية وإكمال خارطة طريق الأنمي!
           </Typography>
         </Box>
       </motion.div>
 
-      {/* 2-Tier Podium (1st and 2nd Place) */}
+      {/* 3-Tier Podium (1st, 2nd, 3rd Place) */}
       <Box
         sx={{
           display: "flex",
@@ -238,6 +238,67 @@ export default function VictoryPodium() {
             </Paper>
           </motion.div>
         )}
+
+        {/* 3rd Place */}
+        {third && (
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            style={{ flex: 1, maxWidth: 260 }}
+          >
+            <Box sx={{ mb: 1.5 }}>
+              <Avatar
+                sx={{
+                  bgcolor: third.color,
+                  width: 58,
+                  height: 58,
+                  mx: "auto",
+                  fontSize: "1.8rem",
+                  border: "3px solid #CD7F32",
+                  boxShadow: `0 0 15px ${third.color}`,
+                }}
+              >
+                {third.symbol}
+              </Avatar>
+              <Typography variant="h6" sx={{ fontWeight: 800, mt: 1 }}>
+                {third.name}
+              </Typography>
+              <Chip
+                label={`🥉 المركز الثالث • ${third.score} نقطة`}
+                sx={{
+                  backgroundColor: "rgba(205, 127, 50, 0.2)",
+                  color: "#CD7F32",
+                  border: "1.5px solid #CD7F32",
+                  fontWeight: 900,
+                  fontSize: "0.85rem",
+                  mt: 0.5,
+                }}
+              />
+            </Box>
+
+            <Paper
+              sx={{
+                height: 120,
+                borderRadius: "20px 20px 0 0",
+                background:
+                  "linear-gradient(180deg, rgba(205, 127, 50, 0.3) 0%, rgba(15, 23, 42, 0.95) 100%)",
+                border: "2px solid #CD7F32",
+                boxShadow: "0 0 20px rgba(205, 127, 50, 0.2)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography
+                variant="h2"
+                sx={{ fontWeight: 900, color: "#CD7F32" }}
+              >
+                3
+              </Typography>
+            </Paper>
+          </motion.div>
+        )}
       </Box>
 
       {/* Match Summary Stats */}
@@ -251,10 +312,10 @@ export default function VictoryPodium() {
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: 900, mb: 2 }}>
-          📊 ملخص أداء البطلين
+          📊 ملخص أداء الأبطال
         </Typography>
         <Grid container spacing={3}>
-          {rankings.slice(0, 2).map((player, idx) => (
+          {rankings.map((player, idx) => (
             <Grid item xs={12} sm={6} key={player.id}>
               <Paper
                 sx={{
@@ -269,7 +330,7 @@ export default function VictoryPodium() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                   <Typography variant="h5" sx={{ fontWeight: 900 }}>
-                    {idx === 0 ? "🥇" : "🥈"}
+                    {idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : "🏅"}
                   </Typography>
                   <Avatar sx={{ bgcolor: player.color, width: 42, height: 42 }}>
                     {player.symbol}

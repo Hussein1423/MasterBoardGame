@@ -318,39 +318,38 @@ export function GameProvider({ children }) {
       if (buff.type === "ADVANCE") {
         advanceStepsDirectly(buff.tiles);
       } else if (buff.type === "OPPONENT_TIME_DRAIN") {
-        const opponentIdx = 1 - state.activePlayerIndex;
-        const opponent = state.players[opponentIdx];
-
-        if (opponent.inventory?.shields > 0) {
-          soundEffects.playShieldBlock();
-          dispatch({
-            type: "CONSUME_BUFF",
-            payload: { playerIndex: opponentIdx, buffType: "SHIELD" },
-          });
-          dispatch({
-            type: "SET_NOTIFICATION",
-            payload: {
-              text: `🛡️ درع الحماية لدى ${opponent.name} تصدى للعنة استنزاف الوقت بنجاح!`,
-              type: "success",
-            },
-          });
-        } else {
-          dispatch({
-            type: "SET_DEBUFF",
-            payload: {
-              playerIndex: opponentIdx,
-              debuffType: "timeDrain",
-              value: 20,
-            },
-          });
-          dispatch({
-            type: "SET_NOTIFICATION",
-            payload: {
-              text: `⌛ تم خصم 20 ثانية من وقت السؤال القادم لـ ${opponent.name}!`,
-              type: "warning",
-            },
-          });
-        }
+        state.players.forEach((opponent, idx) => {
+          if (idx === state.activePlayerIndex || opponent.hasFinished) return;
+          if (opponent.inventory?.shields > 0) {
+            dispatch({
+              type: "CONSUME_BUFF",
+              payload: { playerIndex: idx, buffType: "SHIELD" },
+            });
+            dispatch({
+              type: "SET_NOTIFICATION",
+              payload: {
+                text: `🛡️ درع الحماية لدى ${opponent.name} تصدى للعنة استنزاف الوقت!`,
+                type: "success",
+              },
+            });
+          } else {
+            dispatch({
+              type: "SET_DEBUFF",
+              payload: {
+                playerIndex: idx,
+                debuffType: "timeDrain",
+                value: 20,
+              },
+            });
+          }
+        });
+        dispatch({
+          type: "SET_NOTIFICATION",
+          payload: {
+            text: `⌛ تم خصم 20 ثانية من باقي اللاعبين (غير المحميين)!`,
+            type: "warning",
+          },
+        });
         dispatch({ type: "NEXT_TURN" });
       } else {
         dispatch({

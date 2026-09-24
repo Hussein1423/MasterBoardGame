@@ -64,13 +64,15 @@ export default function Scoreboard() {
   };
 
   const handleAdjustTempScore = (delta) => {
-    setTempScore((prev) => Math.max(0, Math.round((Number(prev) || 0) + delta)));
+    setTempScore((prev) =>
+      Math.max(0, Math.round((Number(prev) || 0) + delta)),
+    );
   };
 
   return (
     <Box sx={{ width: "100%", mb: 3, position: "relative" }}>
       <Grid container spacing={3} alignItems="stretch">
-        {players.slice(0, 2).map((player, idx) => {
+        {players.map((player, idx) => {
           const isActive = idx === activePlayerIndex;
           const isFinished = player.lap >= targetLaps || player.hasFinished;
           const isFrozen = player.debuffs?.isFrozen || player.isFrozen;
@@ -97,24 +99,24 @@ export default function Scoreboard() {
                     border: isFinished
                       ? "2px solid #00E676"
                       : isFrozen
-                      ? "2px solid #00E5FF"
-                      : isActive
-                      ? `2px solid ${player.color}`
-                      : "1px solid rgba(255, 255, 255, 0.08)",
+                        ? "2px solid #00E5FF"
+                        : isActive
+                          ? `2px solid ${player.color}`
+                          : "1px solid rgba(255, 255, 255, 0.08)",
                     background: isFinished
                       ? "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(0, 230, 118, 0.15) 100%)"
                       : isFrozen
-                      ? "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(0, 229, 255, 0.15) 100%)"
-                      : isActive
-                      ? `linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, ${player.color}28 100%)`
-                      : "rgba(15, 23, 42, 0.75)",
+                        ? "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(0, 229, 255, 0.15) 100%)"
+                        : isActive
+                          ? `linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, ${player.color}28 100%)`
+                          : "rgba(15, 23, 42, 0.75)",
                     boxShadow: isFinished
                       ? "0 0 24px rgba(0, 230, 118, 0.35)"
                       : isFrozen
-                      ? "0 0 24px rgba(0, 229, 255, 0.35)"
-                      : isActive
-                      ? `0 0 25px ${player.color}55`
-                      : "none",
+                        ? "0 0 24px rgba(0, 229, 255, 0.35)"
+                        : isActive
+                          ? `0 0 25px ${player.color}55`
+                          : "none",
                     backdropFilter: "blur(12px)",
                     position: "relative",
                     overflow: "hidden",
@@ -155,19 +157,21 @@ export default function Scoreboard() {
                           border: isFinished
                             ? "2px solid #00E676"
                             : isActive
-                            ? "2px solid #FFFFFF"
-                            : "none",
+                              ? "2px solid #FFFFFF"
+                              : "none",
                           boxShadow: isFinished
                             ? "0 0 14px #00E676"
                             : isActive
-                            ? `0 0 14px ${player.color}`
-                            : "none",
+                              ? `0 0 14px ${player.color}`
+                              : "none",
                         }}
                       >
                         {player.symbol}
                       </Avatar>
                       <Box>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
                           <Typography
                             variant="h6"
                             sx={{ fontWeight: 900, lineHeight: 1.2 }}
@@ -189,7 +193,12 @@ export default function Scoreboard() {
                         </Box>
                         <Typography
                           variant="caption"
-                          sx={{ color: "text.secondary", fontWeight: 600, mt: 0.3, display: "block" }}
+                          sx={{
+                            color: "text.secondary",
+                            fontWeight: 600,
+                            mt: 0.3,
+                            display: "block",
+                          }}
                         >
                           الخانة {currentTile.number}: {currentTile.title}
                         </Typography>
@@ -199,7 +208,11 @@ export default function Scoreboard() {
                     {/* Status Badge */}
                     {isFinished ? (
                       <Chip
-                        icon={<CheckCircleIcon sx={{ color: "#00E676 !important" }} />}
+                        icon={
+                          <CheckCircleIcon
+                            sx={{ color: "#00E676 !important" }}
+                          />
+                        }
                         label="مكتمل الجولات 🏁"
                         size="small"
                         sx={{
@@ -213,7 +226,9 @@ export default function Scoreboard() {
                       />
                     ) : isFrozen ? (
                       <Chip
-                        icon={<AcUnitIcon sx={{ color: "#00E5FF !important" }} />}
+                        icon={
+                          <AcUnitIcon sx={{ color: "#00E5FF !important" }} />
+                        }
                         label="مجمّد ❄️"
                         size="small"
                         sx={{
@@ -247,7 +262,10 @@ export default function Scoreboard() {
 
                   {/* Stats Row: Score (Clickable for Manual Edit) & Lap */}
                   <Box sx={{ display: "flex", gap: 1.5, mb: 2 }}>
-                    <Tooltip title="اضغط لتعديل نقاط اللاعب يدوياً بواسطة الحكم ⚖️" arrow>
+                    <Tooltip
+                      title="اضغط لتعديل نقاط اللاعب يدوياً بواسطة الحكم ⚖️"
+                      arrow
+                    >
                       <Paper
                         onClick={() => handleOpenScoreEdit(player)}
                         sx={{
@@ -269,7 +287,13 @@ export default function Scoreboard() {
                           },
                         }}
                       >
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.2,
+                          }}
+                        >
                           <StarIcon sx={{ color: "#FFD700", fontSize: 24 }} />
                           <Box>
                             <Typography
@@ -291,7 +315,9 @@ export default function Scoreboard() {
                             </Typography>
                           </Box>
                         </Box>
-                        <EditIcon sx={{ fontSize: 18, color: "#FFD700", opacity: 0.7 }} />
+                        <EditIcon
+                          sx={{ fontSize: 18, color: "#FFD700", opacity: 0.7 }}
+                        />
                       </Paper>
                     </Tooltip>
 
@@ -322,7 +348,10 @@ export default function Scoreboard() {
                         </Typography>
                         <Typography
                           variant="subtitle1"
-                          sx={{ fontWeight: 900, color: isFinished ? "#00E676" : "#00E5FF" }}
+                          sx={{
+                            fontWeight: 900,
+                            color: isFinished ? "#00E676" : "#00E5FF",
+                          }}
                         >
                           {isFinished
                             ? "🏁 اكتملت"
@@ -504,10 +533,7 @@ export default function Scoreboard() {
                     )}
 
                     {player.debuffs.isFrozen && (
-                      <Tooltip
-                        title="اللاعب مجمد! سيتم تخطي دوره القادم"
-                        arrow
-                      >
+                      <Tooltip title="اللاعب مجمد! سيتم تخطي دوره القادم" arrow>
                         <Chip
                           icon={
                             <AcUnitIcon
@@ -618,7 +644,15 @@ export default function Scoreboard() {
         }}
       >
         <DialogTitle sx={{ pb: 1, textAlign: "center" }}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              mb: 1,
+            }}
+          >
             <GavelIcon sx={{ color: "#FFD700", fontSize: 28 }} />
             <Typography variant="h6" sx={{ fontWeight: 900, color: "#FFD700" }}>
               تعديل نقاط اللاعب يدوياً (الحكم)
@@ -626,7 +660,11 @@ export default function Scoreboard() {
           </Box>
           {editingPlayer && (
             <Chip
-              avatar={<Avatar sx={{ bgcolor: editingPlayer.color }}>{editingPlayer.symbol}</Avatar>}
+              avatar={
+                <Avatar sx={{ bgcolor: editingPlayer.color }}>
+                  {editingPlayer.symbol}
+                </Avatar>
+              }
               label={editingPlayer.name}
               sx={{
                 backgroundColor: `${editingPlayer.color}22`,
@@ -647,7 +685,9 @@ export default function Scoreboard() {
             type="number"
             label="النقاط الجديدة"
             value={tempScore}
-            onChange={(e) => setTempScore(Math.max(0, Math.round(Number(e.target.value) || 0)))}
+            onChange={(e) =>
+              setTempScore(Math.max(0, Math.round(Number(e.target.value) || 0)))
+            }
             InputProps={{
               sx: {
                 borderRadius: 3,
@@ -659,7 +699,15 @@ export default function Scoreboard() {
             sx={{ mb: 3 }}
           />
 
-          <Typography variant="caption" sx={{ color: "text.secondary", fontWeight: 700, display: "block", mb: 1.5 }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              fontWeight: 700,
+              display: "block",
+              mb: 1.5,
+            }}
+          >
             أزرار التعديل السريع:
           </Typography>
 

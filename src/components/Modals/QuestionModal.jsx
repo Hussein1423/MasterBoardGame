@@ -527,12 +527,14 @@ export default function QuestionModal({ open, tile }) {
           </Alert>
         )}
 
-        {/* Direct 1v1 Deflect Button */}
+        {/* Direct Deflect Button */}
         {activePlayer?.inventory?.deflections > 0 &&
           deflectedToPlayerIdx === null &&
-          !opponent?.hasFinished &&
           !isAnswered &&
-          !isTimesUp && (
+          !isTimesUp &&
+          players.some(
+            (p) => p.id - 1 !== activePlayerIndex && !p.hasFinished,
+          ) && (
             <Paper
               sx={{
                 p: 2,
@@ -554,32 +556,38 @@ export default function QuestionModal({ open, tile }) {
                   variant="body2"
                   sx={{ fontWeight: 800, color: "#E040FB" }}
                 >
-                  لديك مرآة تحويل! هل ترغب في تحويل السؤال لمنافسك{" "}
-                  {opponent.name}؟
+                  لديك مرآة تحويل! اختر من تريد تحويل السؤال إليه:
                 </Typography>
               </Box>
-              <Button
-                size="medium"
-                variant="contained"
-                onClick={() => handleDeflect(opponentIdx)}
-                sx={{
-                  backgroundColor: opponent.color,
-                  color: "#FFFFFF",
-                  fontWeight: 900,
-                  borderRadius: 3,
-                  px: 3,
-                  py: 1,
-                  boxShadow: `0 0 15px ${opponent.color}66`,
-                  "&:hover": {
-                    backgroundColor: opponent.color,
-                    filter: "brightness(1.15)",
-                    boxShadow: `0 0 20px ${opponent.color}`,
-                  },
-                }}
-              >
-                تحويل السؤال إلى {opponent.name}{" "}
-                {opponent.inventory?.shields > 0 ? "🛡️" : ""}
-              </Button>
+              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                {players.map((p, idx) => {
+                  if (idx === activePlayerIndex || p.hasFinished) return null;
+                  return (
+                    <Button
+                      key={idx}
+                      size="small"
+                      variant="contained"
+                      onClick={() => handleDeflect(idx)}
+                      sx={{
+                        backgroundColor: p.color,
+                        color: "#FFFFFF",
+                        fontWeight: 900,
+                        borderRadius: 3,
+                        px: 2,
+                        py: 0.5,
+                        boxShadow: `0 0 15px ${p.color}66`,
+                        "&:hover": {
+                          backgroundColor: p.color,
+                          filter: "brightness(1.15)",
+                          boxShadow: `0 0 20px ${p.color}`,
+                        },
+                      }}
+                    >
+                      إلى {p.name} {p.inventory?.shields > 0 ? "🛡️" : ""}
+                    </Button>
+                  );
+                })}
+              </Box>
             </Paper>
           )}
 

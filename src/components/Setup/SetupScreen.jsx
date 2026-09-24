@@ -29,16 +29,28 @@ export default function SetupScreen() {
 
   const [players, setPlayers] = useState([
     {
-      name: "ناروتو",
+      name: "اللاعب 1",
       avatarId: "naruto",
       symbol: AVATARS[0].symbol,
       color: AVATARS[0].color,
     },
     {
-      name: "لوفي",
+      name: "اللاعب 2",
       avatarId: "luffy",
       symbol: AVATARS[1].symbol,
       color: AVATARS[1].color,
+    },
+    {
+      name: "اللاعب 3",
+      avatarId: "eren",
+      symbol: AVATARS[2].symbol,
+      color: AVATARS[2].color,
+    },
+    {
+      name: "اللاعب 4",
+      avatarId: "goku",
+      symbol: AVATARS[7].symbol,
+      color: AVATARS[7].color,
     },
   ]);
 
@@ -85,20 +97,20 @@ export default function SetupScreen() {
               mb: 1,
             }}
           >
-            ⚔️ لعبة خارطة طريق الأنمي (1v1) ⚔️
+            ⚔️ لعبة خارطة طريق الأنمي (4 Players) ⚔️
           </Typography>
           <Typography
             variant="h6"
             sx={{ color: "text.secondary", fontWeight: 600 }}
           >
-            مواجهة مباشرة وتحدي حماسي بين بطلين عبر عوالم كونوها، جزيرة الحلوى،
+            مواجهة رباعية وحماسية بين 4 أبطال عبر عوالم كونوها، جزيرة الحلوى،
             وأسوار باراديس!
           </Typography>
         </Box>
       </motion.div>
 
       <Grid container spacing={4} sx={{ mb: 4 }}>
-        {/* Players Configuration (2 Players 1v1 Split) */}
+        {/* Players Configuration (4 Players Grid) */}
         {players.map((player, idx) => (
           <Grid item xs={12} md={6} key={idx}>
             <motion.div
@@ -125,7 +137,7 @@ export default function SetupScreen() {
                     }}
                   >
                     <Chip
-                      label={`اللاعب ${idx + 1} ${idx === 0 ? "🔴" : "🔵"}`}
+                      label={`اللاعب ${idx + 1} ${idx === 0 ? "🔴" : idx === 1 ? "🔵" : idx === 2 ? "🟢" : "🟡"}`}
                       sx={{
                         backgroundColor: player.color,
                         color: "#FFFFFF",
@@ -393,7 +405,7 @@ export default function SetupScreen() {
               border: "2px solid #FFFFFF",
             }}
           >
-            بدء المواجهة (1v1 Start Game)
+            بدء المواجهة (4 Players Start)
           </Button>
         </motion.div>
       </Box>

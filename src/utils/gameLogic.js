@@ -3,14 +3,19 @@ import {
   SILHOUETTE_QUESTIONS,
   DIRECT_QUESTIONS,
   SPEED_CHALLENGES,
-} from '../data/questionsData';
+} from "../data/questionsData";
 
-export const BOARD_SIZE = 30;
+export const BOARD_SIZE = 20;
 
 /**
  * Calculates step-by-step tile path and lap updates for a roll
  */
-export function calculateMovement(currentPosition, steps, currentLap, targetLaps) {
+export function calculateMovement(
+  currentPosition,
+  steps,
+  currentLap,
+  targetLaps,
+) {
   const path = [];
   let pos = currentPosition;
   let lap = currentLap;
@@ -104,14 +109,14 @@ export function getRankings(players) {
  */
 export function drawUniqueQuestion(usedQuestionIds = []) {
   const allQuestions = [
-    ...MCQ_QUESTIONS.map((q) => ({ kind: 'MCQ', data: q })),
-    ...SILHOUETTE_QUESTIONS.map((q) => ({ kind: 'SILHOUETTE', data: q })),
-    ...DIRECT_QUESTIONS.map((q) => ({ kind: 'DIRECT', data: q })),
+    ...MCQ_QUESTIONS.map((q) => ({ kind: "MCQ", data: q })),
+    ...SILHOUETTE_QUESTIONS.map((q) => ({ kind: "SILHOUETTE", data: q })),
+    ...DIRECT_QUESTIONS.map((q) => ({ kind: "DIRECT", data: q })),
   ];
 
   // 1. Try to find unused questions across all categories in the entire match
   const unusedQuestions = allQuestions.filter(
-    (item) => !usedQuestionIds.includes(item.data.id)
+    (item) => !usedQuestionIds.includes(item.data.id),
   );
 
   if (unusedQuestions.length > 0) {
@@ -139,7 +144,7 @@ export function drawUniqueQuestion(usedQuestionIds = []) {
  */
 export function drawUniqueChallenge(usedChallengeIds = []) {
   const unusedChallenges = SPEED_CHALLENGES.filter(
-    (c) => !usedChallengeIds.includes(c.id)
+    (c) => !usedChallengeIds.includes(c.id),
   );
 
   if (unusedChallenges.length > 0) {
