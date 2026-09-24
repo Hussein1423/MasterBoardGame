@@ -61,7 +61,7 @@ export const DIRECT_QUESTIONS = [
     id: "dir-bleach-first-quincy-letter",
     anime: "Bleach",
     question:
-      "من هو أول كوينشي في التاريخ منحه يوهاباخ حرفاً من الحروف الأبجدية (Schrift) ليكون نائبه وقائد فرسان الشتيرنريتر؟",
+      "من هو أول كوينشي في التاريخ منحه يوهاباخ حرفاً من الحروف الأبجدية (Schrift) ؟",
     answer: "حرف X / ليلي بارو (Lille Barro)",
     points: 300,
   },
