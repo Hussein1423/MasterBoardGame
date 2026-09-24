@@ -2,8 +2,69 @@
 // 1. Direct Questions (الأسئلة المباشرة - 60s)
 // ==========================================
 export const DIRECT_QUESTIONS = [
- 
- 
+  {
+    id: "dir-mha-endeavor-realname",
+    anime: "My Hero Academia",
+    question: "ما اسم إنديفور الحقيقي؟",
+    answer: "إنجي تودوروكي (Enji Todoroki)",
+    points: 250,
+  },
+  {
+    id: "dir-naruto-chibaku",
+    anime: "Naruto",
+    question:
+      "ما اسم التقنية الأسطورية التي ابتكرها حكيم المسارات الستة قديماً واستُخدمت لختم وتشكيل قمر الجيوبي؟",
+    answer: "تشيباكو تينسي (Chibaku Tensei)",
+    points: 300,
+  },
+  {
+    id: "dir-mha-deku-hero-name",
+    anime: "My Hero Academia",
+    question:
+      "ما هو اللقب البطولي الذي اختاره إيزوكو ميدوريا لنفسه رسمياً في أكاديمية الأبطال؟",
+    answer: "ديكو (Deku)",
+    points: 150,
+  },
+  {
+    id: "dir-mha-endeavor-daughter",
+    anime: "My Hero Academia",
+    question: "ما اسم ابنة إنديفور الوحيدة والشقيقة الكبرى لشوتو تودوروكي؟",
+    answer: "فويومي تودوروكي (Fuyumi Todoroki)",
+    points: 300,
+  },
+  {
+    id: "dir-aot-pastor-nick",
+    anime: "Attack on Titan",
+    question:
+      "ما اسم رجل الدين والقس المتشدد التابع لكنيسة الجدران الذي كان يعلم بسر وجود العمالقة داخل الأسوار؟",
+    answer: "القس نيك (Pastor Nick)",
+    points: 350,
+  },
+
+  {
+    id: "dir-bleach-nemu-promotion",
+    anime: "Bleach",
+    question:
+      "في أي طور أو نموذج من أطوار مشروع 'نيمو' تمت ترقية مايوري كوروتسوتشي ليصبح قائداً للفرقة الثانية عشرة ورئيساً لمعهد أبحاث الشينغامي؟",
+    answer: "نيمو الخامس ",
+    points: 250,
+  },
+  {
+    id: "dir-bleach-haschwalth-epithet",
+    anime: "Bleach",
+    question:
+      "إلى ماذا يرمز الحرف 'B' الممنوح لجوغرام هاسشفالت (قائد فرسان الشتيرنريتر) من قِبل يوهاباخ؟ وما اسم قدرته؟",
+    answer: "الميزان / الموازنة (The Balance)",
+    points: 250,
+  },
+  {
+    id: "dir-bleach-first-quincy-letter",
+    anime: "Bleach",
+    question:
+      "من هو أول كوينشي في التاريخ منحه يوهاباخ حرفاً من الحروف الأبجدية (Schrift) ليكون نائبه وقائد فرسان الشتيرنريتر؟",
+    answer: "حرف X / ليلي بارو (Lille Barro)",
+    points: 300,
+  },
 ];
 
 // ==========================================
@@ -20,8 +81,66 @@ export const MCQ_QUESTIONS = [
     correctAnswer: "غونتر شولتز",
     points: 200,
   },
-
-  
+  {
+    id: "mcq-bleach-nemu-version",
+    anime: "Bleach",
+    question:
+      "ما هو رقم إصدار الجسد الاصطناعي الحالي لنيمو (Nemu Kurotsuchi) نائبة القائد مايوري التي ظهرت طوال أحداث الأنمي؟",
+    options: ["نيمو 4", "نيمو 5", "نيمو 6", "نيمو 7"],
+    correctIndex: 3,
+    correctAnswer: "نيمو 7",
+    points: 150,
+  },
+  {
+    id: "mcq-bleach-bankai",
+    anime: "Bleach",
+    question:
+      "ما هو اسم المرحلة الثانية والنهائية لإطلاق كامل طاقة الزانباكتو في بليتش؟",
+    options: [
+      "شيكاي (Shikai)",
+      "بانكاي (Bankai)",
+      "ريسوراكشن (Resurrección)",
+      "فولبرينغ (Fullbring)",
+    ],
+    correctIndex: 1,
+    correctAnswer: "بانكاي (Bankai)",
+    points: 100,
+  },
+  {
+    id: "mcq-aot-thunderspears",
+    anime: "Attack on Titan",
+    question:
+      "ما هو السلاح المبتكر ذو الرؤوس المتفجرة الذي طوّره فيلق الاستطلاع لاختراق درع العملاق المدرع وتفجيره من الداخل؟",
+    options: [
+      "نصال الفولاذ فائق الصلابة",
+      "رماح الرعد",
+      "مدافع الشلل الحركي",
+      "قذائف حجر الجليد المتفجر",
+    ],
+    correctIndex: 1,
+    correctAnswer: "رماح الرعد",
+    points: 150,
+  },
+  {
+    id: "mcq-hxh-zetsu",
+    anime: "Hunter x Hunter",
+    question:
+      "ما اسم المهارة الدفاعية الأساسية في النين التي تعتمد على إغلاق مسام الشاكرا/النين بالكامل لإخفاء الهالة والوجود عن الخصوم؟",
+    options: ["تين (Ten)", "زيتسو (Zetsu)", "رين (Ren)", "هاتسو (Hatsu)"],
+    correctIndex: 1,
+    correctAnswer: "زيتسو (Zetsu)",
+    points: 100,
+  },
+  {
+    id: "mcq-aot-14th-commander",
+    anime: "Attack on Titan",
+    question:
+      "من هي الشخصية التي تم تعيينها رسمياً كالقائد الرابع عشر (14th Commander) لفيلق الاستطلاع؟",
+    options: ["إروين سميث", "هانجي زوي", "أرمين أرليرت", "كيث شاديس"],
+    correctIndex: 1,
+    correctAnswer: "هانجي زوي",
+    points: 150,
+  },
 ];
 
 // ==========================================
@@ -48,16 +167,93 @@ export const SILHOUETTE_QUESTIONS = [
       hairStyle: "شعر أشقر مصفف للخلف وبنية محارب قوية",
     },
   },
-
- 
-
+  {
+    id: "sil-aot-mike",
+    type: "silhouette",
+    anime: "Attack on Titan",
+    basePoints: 500,
+    question: "من هي هذه الشخصية؟",
+    initialHint:
+      "يُصنف رسمياً كثاني أقوى جندي بشري داخل الأسوار بعد القائد ليفاي أكرمان.",
+    additionalHints: [
+      "شغل منصب النائب الأول والمساعد الأقرب للقائد إروين سميث ويمتلك حاسة شم خارقة لتمييز العمالقة.",
+      "هو أول جندي بشري يلتقي بالعملاق القرد (زيك) ويتحدث إليه مباشرة قبل نهايته المأساوية.",
+    ],
+    characterName: "مايكي زاكارياس (Mike Zacharias)",
+    correctAnswer: "مايكي زاكارياس (Mike Zacharias)",
+    avatarConfig: {
+      symbol: "👃",
+      color: "#8D6E63",
+      hairStyle: "شعر أشقر مقسم مع لحية شقراء خفيفة وبنية جسدية ضخمة",
+    },
+  },
+  {
+    id: "sil-hxh-peggy",
+    type: "silhouette",
+    anime: "Hunter x Hunter",
+    basePoints: 500,
+    question: "من هي هذه الشخصية؟",
+    initialHint:
+      "أول نملة كيميرا تجرأت على التحدث إلى الملك ميرويم فور ولادته العنيفة وخروجه من بطن أمه.",
+    additionalHints: [
+      "قائد سرب بارز في العش تميز بشغفه الشديد بالقراءة وكان مسؤولاً عن جمع الكتب ونقل المعرفة والعلوم للنمل.",
+      "قُتل بضربة ذيل خاطفة ومباشرة من الملك ميرويم بمجرد أن ركض وتدخل لمحاولة علاج الملكة المصابة.",
+    ],
+    characterName: "بيغي (Peggy)",
+    correctAnswer: "بيغي (Peggy)",
+    avatarConfig: {
+      symbol: "📖",
+      color: "#546E7A",
+      hairStyle: "مظهر يشبه طائر البطريق يرتدي نظارات طبية وقبعة صغيرة",
+    },
+  },
+  {
+    id: "sil-mha-mirko",
+    type: "silhouette",
+    anime: "My Hero Academia",
+    basePoints: 400,
+    question: "من هي هذه الشخصية؟",
+    initialHint:
+      "احتُل من قِبلها المركز الخامس (No. 5) في الترتيب الرسمي للائحة أبطال اليابان المحترفين.",
+    additionalHints: [
+      "اقتُحمت بواسطتها خطوط الدفاع الأمامية لمستشفى جاكو بمفردها فور كشف الهوية السرية للطبيب غاراكي.",
+      "رُغم استنزاف دمائها وتكالب النومو الخارقين عليها، وُجّهت ركلة ساحقة بكل قوة إلى كبسولة التعديل البيولوجي فحُطّم زجاجها، مما أفسد اكتمال دمج جسد شيغاراكي بنسبة 100% وأُوقظ قبل أوانه.",
+    ],
+    characterName: "ميروكو (Mirko / Rumi Usagiyama)",
+    correctAnswer: "ميروكو (Mirko / Rumi Usagiyama)",
+    avatarConfig: {
+      symbol: "🐰",
+      color: "#D81B60",
+      hairStyle:
+        "شعر أبيض طويل ممتد مع أذني أرنب وبشرة سمراء بنية وبنية عضلية قوية",
+    },
+  },
+  {
+    id: "sil-mha-twice",
+    type: "silhouette",
+    anime: "My Hero Academia",
+    basePoints: 400,
+    question: "من هي هذه الشخصية؟",
+    initialHint:
+      "أُدخل أوفر هول (Overhaul) إلى المستودع السري لعصبة الأشرار بواسطته، مما مهد لبدء التحالف بين الطرفين.",
+    additionalHints: [
+      "صودق البطل الخفي هوكس (Hawks) من قِبله واعتُبر صديقاً مقرباً ومخلصاً للجبهة، دون إدراك لكونه جاسوساً متخفياً لصالح الأبطال.",
+      "استُخدمت ميزته المسماة 'المضاعفة' (Double) لصنع جيوش لا نهائية من النسخ، قبل أن تُنهى حياته في مواجهة مأساوية من الخلف.",
+    ],
+    characterName: "توايس (Twice / Jin Bubaigawara)",
+    correctAnswer: "توايس (Twice / Jin Bubaigawara)",
+    avatarConfig: {
+      symbol: "🎭",
+      color: "#212121",
+      hairStyle: "قناع أسود ورمادي كامل يغطي الوجه مع خطوط بيضاء مميزة للعينين",
+    },
+  },
 ];
 
 // ==========================================
 // 4. Speed Challenges (تحديات السرعة والتعداد المدمجة - 30s)
 // ==========================================
 export const SPEED_CHALLENGES = [
-
   {
     id: "chal-4",
     anime: "Naruto",
@@ -69,7 +265,7 @@ export const SPEED_CHALLENGES = [
     points: 100,
     timeLimit: 30,
   },
- 
+
   {
     id: "chal-sins-members",
     anime: "The Seven Deadly Sins",
@@ -79,7 +275,42 @@ export const SPEED_CHALLENGES = [
     answer:
       "ميليوداس (خطيئة الغضب)، بان (خطيئة الجشع)، كينغ (خطيئة الكسل)، ديان (خطيئة الحسد)، غوثر (خطيئة الشهوة)، ميرلين (خطيئة الشراهة)، إسكانور (خطيئة الكبرياء).",
     points: 250,
+    timeLimit: 35,
+  },
+  {
+    id: "chal-mha-fire-users",
+    anime: "My Hero Academia",
+    title: "مستخدمو عنصر النار",
+    prompt:
+      "اذكر 4 شخصيات تستخدم قدرات أو ميزات تعتمد على النار أو اللهب في My Hero Academia خلال 30 ثانية.",
+    answer:
+      "إنديفور (إنجي تودوروكي)، شوتو تودوروكي، دابي (تويا تودوروكي)، باكوغو كاتسوكي (انفجارات تعتمد على إشعال العرق)، إيغنيوم، مانيت (والد ديكو لديه تنفس ناري).",
+    points: 200,
     timeLimit: 30,
+  },
+
+  {
+    id: "chal-naruto-ice-users",
+    anime: "Naruto",
+    title: "مستخدمو عنصر الجليد",
+    prompt:
+      "اذكر شخصيتين (2) استخدمتا أسلوب الجليد (Hyōton) في عالم ناروتو خلال 30 ثانية.",
+    answer:
+      "هاكو (عشيرة يوكي)، كاجويا أوتسوتسوكي، كاكاشي هاتاكي (في روايات شيندن)، فوبوكي كاكوي، روكا روروكي، ناداري روغا.",
+    points: 250,
+    timeLimit: 30,
+  },
+
+  {
+    id: "chal-anime-org-leaders",
+    anime: "أنميات متعددة",
+    title: "قادة ورؤساء المنظمات",
+    prompt:
+      "اذكر 5 رؤساء أو قادة لمنظمات سرية أو إجرامية من 5 أنميات مختلفة خلال 20 ثانية.",
+    answer:
+      "1. باين / ناغاتو (منظمة الأكاتسوكي - Naruto)\n2. كورولو لوسيلفر (عصابة غينيه ريودان - Hunter x Hunter)\n3. تومورا شيغاراكي / أول فور ون (عصبة الأشرار - My Hero Academia)\n4. يوهاباخ (فرسان الواندنريتش / الشتيرنريتر - Bleach)\n5. كينباتشي دوتو / كينتوكي أو دون كيشوت دوفلامينغو (عائلة دون كيشوت - One Piece)\n(أمثلة أخرى مقبولة: ماكوتو شيشيو، كاي تشيساكي / أوفرهول).",
+    points: 250,
+    timeLimit: 20,
   },
 ];
 
