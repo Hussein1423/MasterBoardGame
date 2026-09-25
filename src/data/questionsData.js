@@ -40,6 +40,37 @@ export const DIRECT_QUESTIONS = [
     answer: "القس نيك (Pastor Nick)",
     points: 350,
   },
+  {
+    id: "dir-aot-warhammer-holder",
+    anime: "Attack on Titan",
+    question: "ما اسم حاملة عملاق مطرقة الحرب قبل أن يلتهمها إرين في ليبيريو؟",
+    answer: "لارا تايبر (Lara Tybur)",
+    points: 300,
+  },
+  {
+    id: "dir-hxh-komugi-gungi",
+    anime: "Hunter x Hunter",
+    question:
+      "ما اسم الفتاة الكفيفة وبطلة لعبة الغونغي التي كان يلعب معها ملك النمل ميرويم؟",
+    answer: "كوموغي (Komugi)",
+    points: 250,
+  },
+  {
+    id: "dir-hxh-accompany-card",
+    anime: "Hunter x Hunter",
+    question:
+      "ما اسم التعويذة أو البطاقة السحرية التي استخدمها غون وكيلوا في نهاية آرك جزيرة الطمع (Greed Island) لنقلهما إلى 'نيغ'؟",
+    answer: "بطاقة الرفقة (Accompany)",
+    points: 350,
+  },
+  {
+    id: "dir-kny-shinobu-decapitate",
+    anime: "Demon Slayer",
+    question:
+      "من هو الهاشيرا الوحيد الذي لا يمتلك القوة الجسدية الكافية لقطع رؤوس الشياطين؟",
+    answer: "شينوبو كوتشو (هاشيرا الحشرات)",
+    points: 300,
+  },
 
   {
     id: "dir-bleach-nemu-promotion",
@@ -108,12 +139,13 @@ export const MCQ_QUESTIONS = [
   {
     id: "mcq-naruto-supreme-commander",
     anime: "Naruto",
-    question: "من هو القائد الأعلى الاستراتيجي لجيش تحالف الشينوبي (Supreme Commander) الذي أدار غرف العمليات والتخطيط الرئيسي في حرب النينجا العظمى الرابعة؟",
+    question:
+      "من هو القائد الأعلى الاستراتيجي لجيش تحالف الشينوبي (Supreme Commander) الذي أدار غرف العمليات والتخطيط الرئيسي في حرب النينجا العظمى الرابعة؟",
     options: [
       "غارا (الكازيكاجي الخامس)",
       "إي (الرايكاجي الرابع)",
       "تسونادي (الهوكاجي الخامس)",
-      "أونوكي (التسوتشيكاجي الثالث)"
+      "أونوكي (التسوتشيكاجي الثالث)",
     ],
     correctIndex: 1,
     correctAnswer: "إي (الرايكاجي الرابع)",
@@ -160,6 +192,36 @@ export const MCQ_QUESTIONS = [
     points: 150,
   },
   {
+    id: "mcq-naruto-seven-swords-master",
+    anime: "Naruto",
+    question:
+      "من هو الشينوبي الوحيد من قرية الضباب الذي أتقن وحمل جميع سيوف السيافين السبعة الأسطورية؟",
+    options: [
+      "جنين أكيبينو",
+      "مانغيتسو هوزوكي",
+      "رينغو كوروسوكي",
+      "كوشيمارو كورواراري",
+    ],
+    correctIndex: 1,
+    correctAnswer: "مانغيتسو هوزوكي",
+    points: 200,
+  },
+  {
+    id: "mcq-bleach-kirinji-title",
+    anime: "Bleach",
+    question:
+      "من هو عضو الفرقة الملكية (الفرقة صفر) الملقب بـ 'شيطان الينابيع الحارة' وسيد الينابيع الشافية في قصر ملك الأرواح؟",
+    options: [
+      "تينجيرو كيرينجي",
+      "سينجومارو شوتو",
+      "إيتشيبيه هيوسوبي",
+      "أويتسو نيميا",
+    ],
+    correctIndex: 0,
+    correctAnswer: "تينجيرو كيرينجي",
+    points: 250,
+  },
+  {
     id: "mcq-hxh-zetsu",
     anime: "Hunter x Hunter",
     question:
@@ -203,6 +265,28 @@ export const SILHOUETTE_QUESTIONS = [
       symbol: "🦷",
       color: "#FF9800",
       hairStyle: "شعر أشقر مصفف للخلف وبنية محارب قوية",
+    },
+  },
+
+  {
+    id: "sil-kny-kanae",
+    type: "silhouette",
+    anime: "Demon Slayer",
+    basePoints: 350,
+    question: "من هي هذه الشخصية؟",
+    initialHint:
+      "أُنقذت مع أختها الصغرى في اللحظة الأخيرة من هجوم شيطان على يد هاشيرا بعد مقتل والديهما.",
+    additionalHints: [
+      "شُغل من قِبلها منصب 'هاشيرا الزهور' واستُخدم تنفس الزهور بمهارة فائقة دفاعاً عن البشر.",
+      "قُتلت في مواجهة دامية قاسية ضد قمر الشياطين العلوي الثاني (دوما)، وتُركت وصيتها الأخيرة لأختها شينوبو قبل شروق الشمس.",
+    ],
+    characterName: "كاناي كوتشو (Kanae Kocho)",
+    correctAnswer: "كاناي كوتشو (Kanae Kocho)",
+    avatarConfig: {
+      symbol: "🌸",
+      color: "#CE93D8",
+      hairStyle:
+        "شعر أسود طويل مزين بمشبكي فراشة وردية وهاوري بنمط أجنحة الفراشة",
     },
   },
   {
@@ -324,7 +408,27 @@ export const SPEED_CHALLENGES = [
     points: 100,
     timeLimit: 30,
   },
-
+  {
+    id: "chal-mha-ofa-users",
+    anime: "My Hero Academia",
+    title: "حاملو قدرة ون فور أول",
+    prompt:
+      "اذكر 3 من مستخدمي قدرة ون فور أول (One For All) عبر تاريخها خلال 30 ثانية.",
+    answer:
+      "يويتشي شيغاراكي (المستخدم الأول)، كودو (الثاني)، بروس (الثالث)، هيكاغي شينوموري (الرابع)، دايغورو بانجو (الخامس)، إين (السادس)، نانا شيمورا (السابعة)، توشينوري ياغي / أولمايت (الثامن)، إيزوكو ميدوريا / ديكو (التاسع).",
+    points: 200,
+    timeLimit: 30,
+  },
+  {
+    id: "chal-bleach-espada-members",
+    anime: "Bleach",
+    title: "أعضاء الإسبادا",
+    prompt: "اذكر 5 من أعضاء فرقة الإسبادا (Espada) في بليتش خلال 30 ثانية.",
+    answer:
+      "كويوت ستارك، باريغان لويزنبيرن، تيا  / هاربيل، ألكيورا شيفار، نويترا جيلجا، غريمجو جايغرجاوك، زوماري ريرو، زايلابورو غرانز، آرونيرو أرويليري، يامي رياجو (يمكن أيضاً قبول: نيل / نيليل، لوكيمبير، دوردوني).",
+    points: 250,
+    timeLimit: 30,
+  },
   {
     id: "chal-bleach-schutzstaffel",
     anime: "Bleach",
@@ -381,6 +485,28 @@ export const SPEED_CHALLENGES = [
     answer:
       "1. باين / ناغاتو (منظمة الأكاتسوكي - Naruto)\n2. كورولو لوسيلفر (عصابة غينيه ريودان - Hunter x Hunter)\n3. تومورا شيغاراكي / أول فور ون (عصبة الأشرار - My Hero Academia)\n4. يوهاباخ (فرسان الواندنريتش / الشتيرنريتر - Bleach)\n5. كينباتشي دوتو / كينتوكي أو دون كيشوت دوفلامينغو (عائلة دون كيشوت - One Piece)\n(أمثلة أخرى مقبولة: ماكوتو شيشيو، كاي تشيساكي / أوفرهول).",
     points: 250,
+    timeLimit: 20,
+  },
+  {
+    id: "chal-naruto-division-commanders",
+    anime: "Naruto",
+    title: "قادة فرق التحالف الميدانية",
+    prompt:
+      "اذكر 3 من قادة الفرق الخمس الأساسية لجيش تحالف الشينوبي في حرب النينجا العظمى الرابعة خلال 30 ثانية.",
+    answer:
+      "داروي (قائد الفرقة 1)، كيتسوتشي (قائد الفرقة 2)، كاكاشي هاتاكي (قائد الفرقة 3)، غارا (قائد الفرقة 4)، ميفوني (قائد الفرقة 5).",
+    points: 250,
+    timeLimit: 30,
+  },
+  {
+    id: "chal-aot-nine-titans-7",
+    anime: "Attack on Titan",
+    title: "العمالقة التسعة الأسطوريون",
+    prompt:
+      "اذكر 7 من العمالقة التسعة (The Nine Titans) في هجوم العمالقة خلال 20 ثانية.",
+    answer:
+      "العملاق المؤسس، العملاق المهاجم، العملاق المدرع، العملاق الضخم، العملاقة الأنثى، عملاق الفك، عملاق الوحش، عملاق العربة، عملاق مطرقة الحرب.",
+    points: 150,
     timeLimit: 20,
   },
 ];
